@@ -1,0 +1,18 @@
+{
+	"manifest_version" : 2,
+	"name" : "Magpie Messanger",
+	"version" : "0.0.1",
+	"browser_action" : {
+		"default_icon" : "image/icon.png",
+		"default_title" : "Call Magpie",
+		"default_popup" : "popup.html"
+	},
+	"background" : {
+		"page" : "background.html"
+	},
+	"permissions" : [
+		"activeTab",
+		"background"
+	]
+
+}
