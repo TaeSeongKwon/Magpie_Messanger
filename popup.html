@@ -1,9 +1,26 @@
 <!DOCTYPE HTML>
-<html>
+<html ng-app="magpie_front">
 	<head>
-		<title></title>
-		<link>
-		<script></script>
+		<meta charset="utf-8">
+		<title>Magpie Messanger</title>
+		<link rel='stylesheet' href='css/onsenui.css'> 
+		<link rel='stylesheet' href='css/onsen-css-components-blue-basic-theme.css'> 
+		<script src='js/angular.min.js'></script>
+		<script src='js/onsenui.min.js'></script>
+		<script src='js/angular-onsenui.min.js'></script>
+		<script src='js/main.js'></script>
+		<style>
+			html{
+				width : 400px;
+				height : 700px;
+			}
+		</style>
+
 	</head>
-	<body></body>
+	<body ng-controller="AppController">
+		<ul>
+			<li ng-repeat="(index, value) in myList">{{value}}</li>
+		</ul>
+		
+	</body>
 </html>
