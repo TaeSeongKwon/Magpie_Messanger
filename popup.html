@@ -14,13 +14,55 @@
 				width : 400px;
 				height : 700px;
 			}
+			#mainLogo{
+				width:170px;
+			}
+			#mainLogoSection{
+				margin-top: 100px;
+				margin-bottom: 50px;
+				text-align: center;
+			}
+			#loginBtnSection{
+				padding : 0 10px;
+			}
+			.loginInput{
+				width : 250px;
+			}
 		</style>
 
 	</head>
 	<body ng-controller="AppController">
-		<ul>
-			<li ng-repeat="(index, value) in myList">{{value}}</li>
-		</ul>
-		
+		<ons-navigator var="pageManager" page='loginPage.html' ></ons-navigator>
+		<!-- Start Login Page -->
+		<ons-template id='loginPage.html'>
+			<ons-page>
+				<section id='mainLogoSection'>
+					<img id='mainLogo' src='image/magpie_main.png'>
+				</section>
+				<section style="text-align : center;">
+					<p>
+						<ons-input class="loginInput" modifier="underbar" placeholder="Email" ></ons-input>
+					</p>
+					<p>
+						<ons-input class="loginInput" modifier="underbar" type="password" placeholder="Password" ></ons-input>
+					</p>
+					<p><ons-button modifier="quiet" ng-click="pageManager.pushPage('accountPage.html')">계정이 없으신가요?</ons-button></p>
+					<p id='loginBtnSection'><ons-button modifier="large">로그인</ons-button></p>
+				</section>
+			</ons-page>
+		</ons-template>
+		<!-- End Login Page -->
+
+		<!-- Start Account Page -->
+		<ons-template id="accountPage.html"> 
+			<ons-page>
+				<ons-toolbar>
+					<div class="left">
+						<ons-back-button>취소</ons-back-button>
+					</div>
+					<div class="center">회원가입</div>
+				</ons-toolbar>
+			</ons-page>
+		</ons-template>
 	</body>
 </html>
