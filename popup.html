@@ -39,6 +39,9 @@
 			.messageInput ons-input{
 				width : 100%;
 			}
+			.message{
+				background-color: inherit !important;
+			}
 		</style>
 
 	</head>
@@ -107,12 +110,18 @@
 		<!-- Default : Side MenuBar -->
 		<ons-template id="mainPage.html">
 			<ons-splitter var="sideMenu">
-				<ons-splitter-side side="left" width="100px">
+				<ons-splitter-side side="left" width="60px">
 					<ons-page>
 						<ons-list>
-							<ons-list-item modifier="longdivider" ng-click="selectMenu('home')">Home</ons-list-item>
-							<ons-list-item modifier="longdivider" ng-click="selectMenu('ChatingList')">Chatting</ons-list-item>
-							<ons-list-item modifier="longdivider" ng-click="selectMenu('home')">Face Time</ons-list-item>
+							<ons-list-item modifier="longdivider" ng-click="selectMenu('home')">
+								<ons-icon size="30px"icon="fa-home"></ons-icon>
+							</ons-list-item>
+							<ons-list-item modifier="longdivider" ng-click="selectMenu('ChatingList')">
+								<ons-icon size="30px" icon="fa-comment"></ons-icon>
+							</ons-list-item>
+							<ons-list-item modifier="longdivider" ng-click="selectMenu('home')">
+								<ons-icon size="30px" icon="fa-video-camera"></ons-icon>
+							</ons-list-item>
 						</ons-list>
 					</ons-page>
 					
@@ -151,7 +160,7 @@
 					<ons-list-item modifier="longdivider"></ons-list-item>
 				</ons-list>
 				<ons-fab position="bottom right">
-					<ons-icon icon="md-plus"></ons-icon>
+					<ons-icon icon="fa-user-plus"></ons-icon>
 				</ons-fab>
 			</ons-page>
 		</ons-template>
@@ -181,7 +190,7 @@
 					<ons-list-item modifier="longdivider"></ons-list-item>
 				</ons-list>
 				<ons-fab position="bottom right">
-					<ons-icon icon="md-plus"></ons-icon>
+					<ons-icon icon="fa-comments"></ons-icon>
 				</ons-fab>
 			</ons-page>
 		</ons-template>
@@ -216,22 +225,18 @@
 					</div>
 				</ons-bottom-toolbar>
 				<ons-list>
-					<ons-list-item modifier="longdivider">
-						
+					<ons-list-item class="message me" modifier="nodivider">
+						Hello!
 					</ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
+					<ons-list-item class="message other" modifier="nodivider">
+						World!
+					</ons-list-item>
+					<ons-list-item modifier="nodivider"></ons-list-item>
+					<ons-list-item modifier="nodivider"></ons-list-item>
+					<ons-list-item modifier="nodivider"></ons-list-item>
+					<ons-list-item modifier="nodivider"></ons-list-item>
+
+					
 				</ons-list>
 			</ons-page>
 		</ons-template>
