@@ -11,6 +11,8 @@ var k;
 	STATUS = "current_status";
 	CAT_LOGIN = "popup_login";
 	CAT_JOIN = "popup_join";
+	SEARCH_USER = "search_user";
+
 	//ETC...
 	USER_ACCOUNT = "account_info";
 	LOGIN = "Login";
@@ -21,6 +23,8 @@ var k;
 	RESPONSE_LOGIN = "response:login";
 	REQUEST_JOIN = "request:join";
 	RESPONSE_JOIN = "response:join";
+	REQUEST_SEARCH_USER = "request:search_user";
+	RESPONSE_SEARCH_USER = "response:search_user";
 
 	// Start Define User Informateion
 	var User = function(){
@@ -53,15 +57,6 @@ var k;
 				user.accountInfo = data[USER_ACCOUNT];	
 				socket.emit(REQUEST_LOGIN, user.accountInfo);
 			}
-
-			//RESPONESE LOGIN
-			socket.on(RESPONSE_LOGIN, (data) => {
-				console.log("=> Response|login : ", data);
-				if(data.isSuccess == true){
-					user.myStatus = LOGIN;
-				}else chrome.storage.sync.clear();
-				
-			});
 			// define server and background communication
 			socket.on(RESPONSE_JOIN, (res) => {
 				var data = {
@@ -72,7 +67,10 @@ var k;
 				};
 				myPort.postMessage(data);
 			});
+
+			//RESPONESE LOGIN
 			socket.on(RESPONSE_LOGIN, (res) => {
+				console.log("=> Response|login : ", data);
 				var data = {
 					type 		:  RESPONSE,
 					category 	: CAT_LOGIN,
@@ -81,16 +79,29 @@ var k;
 				if(res.isSuccess){
 					data['userProfile'] = res['userProfile'];
 					data['friendList'] = res['friendList'];
+					user.myStatus = LOGIN;
+				}else {
+					chrome.storage.sync.clear();
 				}
 				myPort.postMessage(data);
 			});
+
+			socket.on(RESPONSE_SEARCH_USER, (res) => {
+				var data = {
+					type	: RESPONSE,
+					category : SEARCH_USER,
+					isSuccess : res.isSuccess,
+					resultList : res.resultList
+				}
+				myPort.postMessage(data);
+			});
+
 			// Define PopupPage OnConnect Event
 			chrome.runtime.onConnect.addListener(function(port){
 				if(port.name == "magpie_app"){
 					myPort = port;
 				 	init(socket, port);
 				}
-
 			});
 			// chrome.runtime
 		});	
@@ -135,7 +146,9 @@ var k;
 		else if(data.category == CAT_JOIN)
 			wRequestJoin(data['input_name'], data['input_email'], 
 				data['input_pwd1'], data['input_pwd2'], client);
-		
+		else if(data.category == SEARCH_USER){
+			wRequestSearchUser(data['memberNum'],data['userEmail'], client);
+		}
 	}
 
 	function wRequestLogin(userID, userPwd, wSocket){
@@ -155,5 +168,13 @@ var k;
 		};
 		console.log("data : ", inputData);
 		wSocket.emit(REQUEST_JOIN, inputData);
+	}
+
+	function wRequestSearchUser(memberNum, userEmail, wSocket){
+		var requestData = {
+			'memNum' : memberNum,
+			'userEmail' : userEmail
+		};
+		wSocket.emit(REQUEST_SEARCH_USER, requestData)
 	}
 })();

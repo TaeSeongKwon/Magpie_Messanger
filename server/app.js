@@ -17,6 +17,8 @@ REQUEST_LOGIN = "request:login";
 RESPONSE_LOGIN = "response:login";
 REQUEST_JOIN = "request:join";
 RESPONSE_JOIN = "response:join";
+REQUEST_SEARCH_USER = "request:search_user";
+RESPONSE_SEARCH_USER = "response:search_user";
 
 //io.use(socketAsPromised());
 io.listen(port);
@@ -49,6 +51,7 @@ io.on("connection", (socket) => {
 						socket.emit(RESPONSE_LOGIN, resData);
 					}else{ 
 						var data = {
+							'userNum'	: result[0]['mem_num'],
 							'userEmail' : result[0]['mem_email'],
 							'userName'	: result[0]['mem_name']
 						};
@@ -129,6 +132,34 @@ io.on("connection", (socket) => {
 			);
 		}
 	});
+
+	socket.on(REQUEST_SEARCH_USER, (reqData) => {
+		var inputEmail = reqData['userEmail'];
+		var memberNum = reqData['memNum'];
+		var resData = {
+			isSuccess : true,
+			resultList : null,
+		}
+		var connection;
+		mysql.createConnection(config).then(
+			(conn) => {
+				var selectQuery = "SELECT mem_num, mem_name, mem_email FROM MEMBER WHERE mem_num Not in(SELECT friendNum FROM friend_list_view WHERE memberNum = ?) AND mem_num != ? AND mem_email = ? ";
+				connection = conn;
+				return connection.query(selectQuery, [memberNum, memberNum, inputEmail]);
+			}
+		).then(
+			(result) => {
+				resData.resultList = result;
+				socket.emit(RESPONSE_SEARCH_USER, resData);
+				connection.end();
+			},
+			(error) => {
+				resData.isSuccess = false;
+				socket.emit(RESPONSE_SEARCH_USER, resData);
+				connection.end();
+			}
+		)
+	});	
 	// mysql.createConnection(config).then(
 	// 	function(conn){
 	// 		var selectQuery = "SELECT * FROM MEMBER";
@@ -174,8 +205,7 @@ io.on("connection", (socket) => {
 
 		mysql.createConnection(config).then(
 			(conn) => {
-				var selectQuery = "SELECT mem_num AS memNum, mem_name AS memName, mem_email AS memEmail FROM FRIEND AS F LEFT OUTER JOIN MEMBER AS M ON F.to_num = M.mem_num 
-									WHERE F.from_num = ? AND F.is_interception = false;"
+				var selectQuery = "SELECT mem_num AS memNum, mem_name AS memName, mem_email AS memEmail FROM FRIEND AS F LEFT OUTER JOIN MEMBER AS M ON F.to_num = M.mem_num WHERE F.from_num = ? AND F.is_interception = false;"
 				connection = conn;
 				return connection.query(selectQuery, [memberNum]);
 			}

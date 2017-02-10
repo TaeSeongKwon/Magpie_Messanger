@@ -9,6 +9,7 @@ CLOSE_POPUP = "close_popup";
 STATUS = "current_status";
 CAT_LOGIN = "popup_login";
 CAT_JOIN = "popup_join";
+SEARCH_USER = "search_user";
 
 var module = angular.module('magpie_front', ['onsen']);
 module.controller('AppController', function($scope){ 
@@ -43,6 +44,10 @@ module.controller('AppController', function($scope){
 				}else{
 					ons.notification.alert("아이디 또는 비밀번호가 틀리셨습니다.", {title : "로그인 실패"});
 				}
+			}else if(data.category == SEARCH_USER){
+				$scope.searchResult =  [];
+				if(data.isSuccess)
+					$scope.searchResult = data.resultList;
 			}
 			// onData(data);
 		}
@@ -72,5 +77,18 @@ module.controller('AppController', function($scope){
 		};
 		loginModal.show();
 		port.postMessage(data);
+	}
+
+	$scope.searchUser = function($event){
+		console.log("event : ", $event);
+		if($event.key == "Enter"){
+			var data = {
+				type : REQUEST,
+				category : SEARCH_USER,
+				userEmail : $scope.inputUser,
+				memberNum : $scope.userProfile['userNum']
+			};
+			port.postMessage(data);
+		}
 	}
 });
