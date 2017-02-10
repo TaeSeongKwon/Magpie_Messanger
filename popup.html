@@ -178,8 +178,8 @@
 					<ons-list-item modifier="longdivider"></ons-list-item>
 					<ons-list-item modifier="longdivider"></ons-list-item>
 				</ons-list>
-				<ons-fab position="bottom right">
-					<ons-icon icon="fa-user-plus"></ons-icon>
+				<ons-fab position="bottom right" ng-click="pageManager.pushPage('AddFriend.html', {data: {title: Friends}})">
+					<ons-icon icon="fa-user-plus" ></ons-icon>
 				</ons-fab>
 			</ons-page>
 		</ons-template>
@@ -270,5 +270,10 @@
 				</ons-list>
 			</ons-page>
 		</ons-template>
+
+
+
+
+
 	</body>
 </html>
