@@ -1,0 +1,37 @@
+<style>
+	.account_input{
+		width : 100%;
+	}
+</style>
+<ons-page>
+	<ons-modal var="joinModal">
+		<ons-progress-circular indeterminate></ons-progress-circular>
+	</ons-modal>
+	<ons-toolbar>
+		<div class="left">
+			<ons-back-button>취소</ons-back-button>
+		</div>
+		<div class="center">회원가입</div>
+	</ons-toolbar>
+	<ons-list>
+		<ons-list-header>계정정보 입력</ons-list-header>
+		<ons-list-item modifier="longdivider">
+			<ons-input modifier="underbar" class="account_input" ng-model="newName" placeholder="User Name"></ons-input>
+		</ons-list-item>
+		<!-- <ons-list-item modifier="longdivider">
+			<ons-input modifier="underbar" class="account_input" placeholder="010-XXXX-XXXX"></ons-input>
+		</ons-list-item>
+		 -->
+		<ons-list-item modifier="longdivider">
+			<ons-input modifier="underbar" class="account_input" ng-model="newEmail" type="email" placeholder="abcd@example.com"></ons-input>
+		</ons-list-item>
+		<ons-list-item modifier="longdivider">
+			<ons-input modifier="underbar" class="account_input" ng-model="newPwd1" type="password" placeholder="Password"></ons-input>
+		</ons-list-item>
+		<ons-list-item modifier="longdivider">
+			<ons-input modifier="underbar" class="account_input" ng-model="newPwd2" type="password" placeholder="Re Password"></ons-input>
+		</ons-list-item>
+	</ons-list>
+	<p></p>
+	<ons-button modifier="large" ng-click="newAccount(newName, newEmail, newPwd1, newPwd2)" >가입하기</ons-button>
+</ons-page>
