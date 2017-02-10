@@ -56,61 +56,25 @@
 		<!-- Start Login Page -->
 		<ons-template id='loginPage.html'>
 			<ons-page>
+				<ons-modal var="loginModal">
+					<ons-progress-circular indeterminate></ons-progress-circular>
+				</ons-modal>
 				<section id='mainLogoSection'>
 					<img id='mainLogo' src='image/magpie_main.png'>
 				</section>
 				<section style="text-align : center;">
 					<p>
-						<ons-input class="loginInput" modifier="underbar" placeholder="Email" ></ons-input>
+						<ons-input class="loginInput" modifier="underbar" ng-model="loginEmail" placeholder="Email" ></ons-input>
 					</p>
 					<p>
-						<ons-input class="loginInput" modifier="underbar" type="password" placeholder="Password" ></ons-input>
+						<ons-input class="loginInput" modifier="underbar" ng-model="loginPwd" type="password" placeholder="Password" ></ons-input>
 					</p>
 					<p><ons-button modifier="quiet" ng-click="pageManager.pushPage('accountPage.html')">계정이 없으신가요?</ons-button></p>
-					<p id='loginBtnSection'><ons-button modifier="large" ng-click="pageManager.pushPage('mainPage.html')">로그인</ons-button></p>
+					<p id='loginBtnSection'><ons-button modifier="large" ng-click="requestLogin(loginEmail, loginPwd)">로그인</ons-button></p>
 				</section>
 			</ons-page>
 		</ons-template>
 		<!-- End Login Page -->
-
-		<!-- Start Account Page -->
-		<ons-template id="accountPage.html">
-			<style>
-				.account_input{
-					width : 100%;
-				}
-			</style>
-			<ons-page>
-				<ons-toolbar>
-					<div class="left">
-						<ons-back-button>취소</ons-back-button>
-					</div>
-					<div class="center">회원가입</div>
-				</ons-toolbar>
-				<ons-list>
-					<ons-list-header>기본 인적사항</ons-list-header>
-					<ons-list-item modifier="longdivider">
-						<ons-input modifier="underbar" class="account_input" placeholder="User Name"></ons-input>
-					</ons-list-item>
-					<ons-list-item modifier="longdivider">
-						<ons-input modifier="underbar" class="account_input" placeholder="010-XXXX-XXXX"></ons-input>
-					</ons-list-item>
-					<ons-list-header>계정정보 입력</ons-list-header>
-					<ons-list-item modifier="longdivider">
-						<ons-input modifier="underbar" class="account_input" type="email" placeholder="abcd@example.com"></ons-input>
-					</ons-list-item>
-					<ons-list-item modifier="longdivider">
-						<ons-input modifier="underbar" class="account_input" type="password" placeholder="Password"></ons-input>
-					</ons-list-item>
-					<ons-list-item modifier="longdivider">
-						<ons-input modifier="underbar" class="account_input" type="password" placeholder="Re Password"></ons-input>
-					</ons-list-item>
-				</ons-list>
-				<p></p>
-				<ons-button modifier="large">가입하기</ons-button>
-			</ons-page>
-		</ons-template>
-		<!-- End Account Page -->
 
 		<!-- Start Main Page -->
 		<!-- Default : Side MenuBar -->
@@ -119,10 +83,10 @@
 				<ons-splitter-side side="left" width="60px">
 					<ons-page>
 						<ons-list>
-							<ons-list-item modifier="longdivider" ng-click="selectMenu('home')">
+							<ons-list-item modifier="longdivider" ng-click="selectMenu('home.html')">
 								<ons-icon size="30px"icon="fa-home"></ons-icon>
 							</ons-list-item>
-							<ons-list-item modifier="longdivider" ng-click="selectMenu('ChatingList')">
+							<ons-list-item modifier="longdivider" ng-click="selectMenu('ChatingList.html')">
 								<ons-icon size="30px" icon="fa-comment"></ons-icon>
 							</ons-list-item>
 							<ons-list-item modifier="longdivider" ng-click="selectMenu('home')">
@@ -133,142 +97,8 @@
 					
 				</ons-splitter-side>
 
-				<ons-splitter-content page="home"></ons-splitter-content>
+				<ons-splitter-content page="home.html"></ons-splitter-content>
 			</ons-splitter>
-		</ons-template>
-		<!-- Page : Home -->
-		<ons-template id="home">
-			<ons-page>
-				<ons-toolbar>
-					<div class="center">
-						홍길동
-					</div>
-					<div class="right">
-						<ons-button modifier="quiet">
-							<ons-icon icon="md-plus"></ons-icon> 
-						</ons-button>
-					</div>
-				</ons-toolbar>
-				<div class="navigation-bar">
-		          <div class="navigation-bar__center">
-		            <ons-input ng-model='idSearchField' type="search" class="search-input custom" style="width: 96%; margin: 6px auto 6px auto;" placeholder="Search"></ons-input>
-		          </div>
-		        </div>
-				<ons-list>
-					<ons-list-item modifier="longdivider" tappable >
-						<div class="left">
-							<img src="image/users/a.jpg" class="list__item__thumbnail">
-						</div>
-						<div class="center">
-							<span class="list__item__title">김철수</span>
-							<span class="list__item__subtitle">인생은 넘나 힘든것</span>
-						</div>
-					</ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-				</ons-list>
-				<ons-fab position="bottom right">
-					<ons-icon icon="fa-user-plus"></ons-icon>
-				</ons-fab>
-			</ons-page>
-		</ons-template>
-		<!-- Page Chatting List -->
-		<ons-template id="ChatingList">
-			<ons-page>
-				<ons-toolbar>
-					<div class="center">
-						대화목록
-					</div>
-				</ons-toolbar>
-				<div class="navigation-bar">
-		          <div class="navigation-bar__center">
-		            <ons-input ng-model='idSearchField' type="search" class="search-input custom" style="width: 96%; margin: 6px auto 6px auto;" placeholder="Search"></ons-input>
-		          </div>
-		        </div>
-				<ons-list>
-					<ons-list-item modifier="longdivider" tappable ng-click="pageManager.pushPage('chattingRoom.html')">
-						<div class="left">
-							<ons-icon icon="fa-comment"></ons-icon>
-						</div>
-						<div class="center">
-							<span class="list__item__title">Hello</span>
-							<span class="list__item__subtitle">myFriend!</span>
-						</div>
-					</ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-				</ons-list>
-				<ons-fab position="bottom right">
-					<ons-icon icon="fa-comments"></ons-icon>
-				</ons-fab>
-			</ons-page>
-		</ons-template>
-		<!-- Page : Chatting -->
-		<ons-template id="chattingRoom.html">
-			<ons-page>
-				<ons-toolbar>
-					<div class="left">
-						<ons-back-button>뒤로</ons-back-button>
-					</div>
-					<div class="center">
-						채팅
-					</div>
-					<div class="right">
-						<ons-button modifier="quiet">
-							<ons-icon icon="md-plus"></ons-icon> 
-						</ons-button>
-					</div>
-				</ons-toolbar>
-				<ons-bottom-toolbar>
-					<div class="center">
-						<ons-row>
-							<ons-col class="messageInput" vertical-align="center">
-								<ons-input modifier="underbar" type="search" placeholder="메시지를 입력하세요..."></ons-input>
-							</ons-col>
-							<ons-col width="75px" class="messageInput" vertical-align="center">
-								<ons-button>보내기</ons-button>
-							</ons-col>
-						</ons-row>
-					</div>
-					<div class="right">
-					</div>
-				</ons-bottom-toolbar>
-				<ons-list>
-					<ons-list-item class="message me" modifier="nodivider">
-						Hello!
-					</ons-list-item>
-					<ons-list-item class="message other" modifier="nodivider">
-						World!
-					</ons-list-item>
-					<ons-list-item modifier="nodivider"></ons-list-item>
-					<ons-list-item modifier="nodivider"></ons-list-item>
-					<ons-list-item modifier="nodivider"></ons-list-item>
-					<ons-list-item modifier="nodivider"></ons-list-item>
-
-					
-				</ons-list>
-			</ons-page>
 		</ons-template>
 	</body>
 </html>
