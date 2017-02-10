@@ -174,7 +174,8 @@ io.on("connection", (socket) => {
 
 		mysql.createConnection(config).then(
 			(conn) => {
-				var selectQuery = "SELECT mem_num AS memNum, mem_name AS memName, mem_email AS memEmail FROM FRIEND AS F LEFT OUTER JOIN MEMBER AS M ON F.to_num = M.mem_num WHERE F.from_num = ? AND F.is_interception = false;"
+				var selectQuery = "SELECT mem_num AS memNum, mem_name AS memName, mem_email AS memEmail FROM FRIEND AS F LEFT OUTER JOIN MEMBER AS M ON F.to_num = M.mem_num 
+									WHERE F.from_num = ? AND F.is_interception = false;"
 				connection = conn;
 				return connection.query(selectQuery, [memberNum]);
 			}
