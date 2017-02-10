@@ -86,7 +86,7 @@
 							<ons-list-item modifier="longdivider" ng-click="selectMenu('home.html')">
 								<ons-icon size="30px"icon="fa-home"></ons-icon>
 							</ons-list-item>
-							<ons-list-item modifier="longdivider" ng-click="selectMenu('ChatingList')">
+							<ons-list-item modifier="longdivider" ng-click="selectMenu('ChatingList.html')">
 								<ons-icon size="30px" icon="fa-comment"></ons-icon>
 							</ons-list-item>
 							<ons-list-item modifier="longdivider" ng-click="selectMenu('home')">
@@ -100,98 +100,5 @@
 				<ons-splitter-content page="home.html"></ons-splitter-content>
 			</ons-splitter>
 		</ons-template>
-
-		<!-- Page Chatting List -->
-		<ons-template id="ChatingList">
-			<ons-page>
-				<ons-toolbar>
-					<div class="center">
-						대화목록
-					</div>
-				</ons-toolbar>
-				<div class="navigation-bar">
-		          <div class="navigation-bar__center">
-		            <ons-input ng-model='idSearchField' type="search" class="search-input custom" style="width: 96%; margin: 6px auto 6px auto;" placeholder="Search"></ons-input>
-		          </div>
-		        </div>
-				<ons-list>
-					<ons-list-item modifier="longdivider" tappable ng-click="pageManager.pushPage('chattingRoom.html')">
-						<div class="left">
-							<ons-icon icon="fa-comment"></ons-icon>
-						</div>
-						<div class="center">
-							<span class="list__item__title">Hello</span>
-							<span class="list__item__subtitle">myFriend!</span>
-						</div>
-					</ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-					<ons-list-item modifier="longdivider"></ons-list-item>
-				</ons-list>
-				<ons-fab position="bottom right">
-					<ons-icon icon="fa-comments"></ons-icon>
-				</ons-fab>
-			</ons-page>
-		</ons-template>
-		<!-- Page : Chatting -->
-		<ons-template id="chattingRoom.html">
-			<ons-page>
-				<ons-toolbar>
-					<div class="left">
-						<ons-back-button>뒤로</ons-back-button>
-					</div>
-					<div class="center">
-						채팅
-					</div>
-					<div class="right">
-						<ons-button modifier="quiet">
-							<ons-icon icon="md-plus"></ons-icon> 
-						</ons-button>
-					</div>
-				</ons-toolbar>
-				<ons-bottom-toolbar>
-					<div class="center">
-						<ons-row>
-							<ons-col class="messageInput" vertical-align="center">
-								<ons-input modifier="underbar" type="search" placeholder="메시지를 입력하세요..."></ons-input>
-							</ons-col>
-							<ons-col width="75px" class="messageInput" vertical-align="center">
-								<ons-button>보내기</ons-button>
-							</ons-col>
-						</ons-row>
-					</div>
-					<div class="right">
-					</div>
-				</ons-bottom-toolbar>
-				<ons-list>
-					<ons-list-item class="message me" modifier="nodivider">
-						Hello!
-					</ons-list-item>
-					<ons-list-item class="message other" modifier="nodivider">
-						World!
-					</ons-list-item>
-					<ons-list-item modifier="nodivider"></ons-list-item>
-					<ons-list-item modifier="nodivider"></ons-list-item>
-					<ons-list-item modifier="nodivider"></ons-list-item>
-					<ons-list-item modifier="nodivider"></ons-list-item>
-
-					
-				</ons-list>
-			</ons-page>
-		</ons-template>
-
-
-
-
-
 	</body>
 </html>
