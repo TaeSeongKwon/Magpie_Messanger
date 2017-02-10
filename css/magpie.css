@@ -1,0 +1,100 @@
+html {
+    width: 400px;
+    height: 600px;
+    /*overflow-y: hidden;*/
+}
+
+a {
+    text-decoration: none;
+}
+
+table {
+    width: 260px;
+    border-collapse: collapse;
+}
+
+tr, td {
+    border: 1px solid #e8e5e5;
+}
+
+.ons-button-design {
+    background-color: #eb8181;
+    font-weight: 600;
+}
+
+.ons-button-design:active {
+    background-color: #eb8181;
+    opacity: 0.4;
+}
+
+#mainLogo {
+    width: 170px;
+}
+
+#mainLogoSection {
+    margin-top: 100px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+#loginBtnSection {
+    padding: 0 10px;
+}
+
+#input-login {
+    display: inline-table;
+    background-color: #ffffff;
+}
+
+#consentSignUp {
+    font-size: 12px;
+    text-align: center;
+}
+
+#signUpBackButton {
+    color: #eb8181;
+}
+
+.button--material {
+    background-color: #eb8181;
+    font-weight: 900;
+}
+
+.button--material:active {
+    background-color: #eb8181;
+    opacity: 0.4;
+}
+
+.page--loginPage__background {
+    background-image: url("../image/login_background.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.loginInput {
+    width: 250px;
+}
+
+.messageInput {
+    padding: 0px 5px;
+}
+
+.messageInput ons-input {
+    width: 100%;
+}
+
+.message {
+    background-color: inherit !important;
+}
+
+.search-input.custom {
+    padding-top: 0px;
+}
+
+.search-input.custom .text-input {
+    padding: 0px 4px;
+}
+
+.account_input {
+    width: 100%;
+}

@@ -6,59 +6,12 @@
 	<title>Magpie Messanger</title>
 	<link rel='stylesheet' href='css/onsenui.css'>
 	<link rel='stylesheet' href='css/onsen-css-components-blue-basic-theme.css'>
+	<link rel='stylesheet' href='css/magpie.css'>
+
 	<script src='js/angular.min.js'></script>
 	<script src='js/onsenui.min.js'></script>
 	<script src='js/angular-onsenui.min.js'></script>
 	<script src='js/main.js'></script>
-	<style>
-		html {
-			width: 550px;
-			height: 700px;
-			overflow-y: hidden;
-			/*height : 100%;*/
-		}
-		/*body{
-
-			}*/
-
-		#mainLogo {
-			width: 170px;
-		}
-
-		#mainLogoSection {
-			margin-top: 100px;
-			margin-bottom: 50px;
-			text-align: center;
-		}
-
-		#loginBtnSection {
-			padding: 0 10px;
-		}
-
-		.loginInput {
-			width: 250px;
-		}
-
-		.messageInput {
-			padding: 0px 5px;
-		}
-
-		.messageInput ons-input {
-			width: 100%;
-		}
-
-		.message {
-			background-color: inherit !important;
-		}
-
-		.search-input.custom {
-			padding-top: 0px;
-		}
-
-		.search-input.custom .text-input {
-			padding: 0px 4px;
-		}
-	</style>
 
 </head>
 
@@ -66,22 +19,30 @@
 	<ons-navigator var="pageManager" page='loginPage.html'></ons-navigator>
 	<!-- Start Login Page -->
 	<ons-template id='loginPage.html'>
-		<ons-page>
+		<ons-page modifier="loginPage">
 			<section id='mainLogoSection'>
+				<br><br>
 				<img id='mainLogo' src='image/magpie_main.png'>
 			</section>
 			<section style="text-align : center;">
+				<div id='input-login'>
+					<table>
+						<tr>
+							<td>
+								<ons-input class="loginInput" type="Email" placeholder="Email" required></ons-input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<ons-input class="loginInput" type="password" placeholder="Password" required></ons-input>
+							</td>
+						</tr>
+					</table>
+				</div>
+
 				<p>
-					<ons-input class="loginInput" modifier="underbar" placeholder="Email"></ons-input>
-				</p>
-				<p>
-					<ons-input class="loginInput" modifier="underbar" type="password" placeholder="Password"></ons-input>
-				</p>
-				<p>
-					<ons-button modifier="quiet" ng-click="pageManager.pushPage('accountPage.html')">계정이 없으신가요?</ons-button>
-				</p>
-				<p id='loginBtnSection'>
-					<ons-button modifier="large" ng-click="pageManager.pushPage('mainPage.html')">로그인</ons-button>
+					<button class="button button--material" ng-click="pageManager.pushPage('mainPage.html')">Log In</button>
+					<button class="button button--material" ng-click="pageManager.pushPage('accountPage.html')">Sign Up</button>
 				</p>
 			</section>
 		</ons-page>
@@ -90,39 +51,33 @@
 
 	<!-- Start Account Page -->
 	<ons-template id="accountPage.html">
-		<style>
-			.account_input {
-				width: 100%;
-			}
-		</style>
 		<ons-page>
 			<ons-toolbar>
 				<div class="left">
-					<ons-back-button>취소</ons-back-button>
+					<ons-back-button id='signUpBackButton'>back</ons-back-button>
 				</div>
-				<div class="center">회원가입</div>
+				<div class="center" style="font-weight:600">Sign Up</div>
 			</ons-toolbar>
 			<ons-list>
-				<ons-list-header>기본 인적사항</ons-list-header>
-				<ons-list-item modifier="longdivider">
-					<ons-input modifier="underbar" class="account_input" placeholder="User Name"></ons-input>
+				<!-- <ons-list-header>인적사항</ons-list-header> -->
+				<ons-list-item modifier="nodivider">
+					<ons-input modifier="underbar" class="account_input" placeholder="Full Name"></ons-input>
 				</ons-list-item>
-				<ons-list-item modifier="longdivider">
-					<ons-input modifier="underbar" class="account_input" placeholder="010-XXXX-XXXX"></ons-input>
-				</ons-list-item>
-				<ons-list-header>계정정보 입력</ons-list-header>
-				<ons-list-item modifier="longdivider">
+				<ons-list-item modifier="nodivider">
 					<ons-input modifier="underbar" class="account_input" type="email" placeholder="abcd@example.com"></ons-input>
 				</ons-list-item>
-				<ons-list-item modifier="longdivider">
+				<ons-list-item modifier="nodivider">
 					<ons-input modifier="underbar" class="account_input" type="password" placeholder="Password"></ons-input>
 				</ons-list-item>
-				<ons-list-item modifier="longdivider">
+				<ons-list-item modifier="nodivider">
 					<ons-input modifier="underbar" class="account_input" type="password" placeholder="Re Password"></ons-input>
 				</ons-list-item>
 			</ons-list>
-			<p></p>
-			<ons-button modifier="large">가입하기</ons-button>
+			<br>
+			<ons-button modifier="large--cta" class="ons-button-design">Complete</ons-button>
+			<br><br><br><br><br><br><br><br><br><br><br><br>
+			<div id="consentSignUp">MagPie
+				<a href="#">약관</a> 및 <a href="#">개인정보 수집 및 이용</a>에<br>동의할 경우 '가입하기'를 눌러주세요.</div>
 		</ons-page>
 	</ons-template>
 	<!-- End Account Page -->
