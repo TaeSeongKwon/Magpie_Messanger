@@ -1,29 +1,23 @@
 <ons-page>
-
 	<ons-toolbar>
-		<div class="left"><ons-back-button></ons-back-button></div>
+		<div class="left"><ons-back-button>Back</ons-back-button></div>
 		<div class="center">요청 보내기</div>
 	</ons-toolbar>
-
-
 	<div class="navigation-bar">
 		<div class="navigation-bar__center">
 			 <ons-input type="search" class="search-input custom" style="width: 96%; margin: 6px auto 6px auto;" placeholder="Search"
 			  ng-model='inputUser' ng-keypress="searchUser($event, inputUser)"></ons-input>
 		</div>
 	</div>
+	<ons-list>
+		<ons-list-item ng-repeat="(idx, value) in searchResult"  ng-click="requestAddFriend(value, idx)" modifier="longdivider" tapplable>
+			<div class="left"><img src="image/users/2.png" class="list__item__thumbnail"></div>
 
-	<div>
-		<ons-list>
-			<ons-list-item ng-repeat="(idx, value) in searchResult"  ng-click="requestAddFriend(value, idx)" modifier="longdivider" tapplable>
-				<div class="left"><img src="image/users/2.png" class="list__item__thumbnail"></div>
-
-				<div class="center">
-					{{value.mem_name}}
-					<!-- <span class="list__item__subtitle">김사과</span> -->
-					<!-- <span class="list__item__subtitle">사과는 맛있어</span> -->
-				</div>
-			</ons-list-item>
-		</ons-list>
-	</div>
+			<div class="center">
+				{{value.mem_name}}
+				<!-- <span class="list__item__subtitle">김사과</span> -->
+				<!-- <span class="list__item__subtitle">사과는 맛있어</span> -->
+			</div>
+		</ons-list-item>
+	</ons-list>
 </ons-page>
