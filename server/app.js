@@ -8,7 +8,7 @@ var crypto			= require("crypto");
 var config = {
 	host	 		: "localhost",
 	user	 		: "root",
-	password		: "1q2w3e4r",
+	password		: "root",
 	database		: "MAGPIE_DB"
 };
 var port = 9900;
@@ -179,7 +179,7 @@ io.on("connection", (socket) => {
 		};
 		mysql.createConnection(config).then(
 			(conn) => {
-				var selectQuery = "SELECT M.mem_num AS memNum, M.mem_name AS memName, M.mem_email AS memEmail FROM FRIEND AS F LEFT OUTER JOIN MEMBER AS M ON F.from_num = M.mem_num  WHERE F.from_num NOT IN (SELECT friend_num FROM friend_list_view WHERE memberNum = ?) AND F.to_num = ? AND F.is_interception = false";
+				var selectQuery = "SELECT M.mem_num AS memNum, M.mem_name AS memName, M.mem_email AS memEmail FROM FRIEND AS F LEFT OUTER JOIN MEMBER AS M ON F.from_num = M.mem_num  WHERE F.from_num NOT IN (SELECT friendNum FROM friend_list_view WHERE memberNum = ?) AND F.to_num = ? AND F.is_interception = false";
 				connection = conn;
 				return connection.query(selectQuery, [userNum, userNum]);
 			}

@@ -189,9 +189,9 @@ module.controller('AppController', function($scope){
 
 	$scope.newChatting = function(){
 		var friendList = $scope.friendList;
-		for(friend in friendList)
-			friend['isCheck'] = false;
-		pageManager.pushPage('chattingRoom.html');
+		for(var idx in friendList)
+			friendList[idx]['isCheck'] = false;
+		pageManager.pushPage('newChatting.html');
 	}
 
 	$scope.createNewChatting = function() {
