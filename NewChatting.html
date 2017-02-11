@@ -1,0 +1,23 @@
+<ons-page>
+	<ons-toolbar>
+		<div class='left'>
+			<ons-back-button>취소</ons-back-button>
+		</div>
+		<div class='center'>
+			새로운 채팅
+		</div>
+		<div class="right">
+			<ons-button modifier="quiet" ng-click="createNewChatting()">확인</ons-button>
+		</div>
+	</ons-toolbar>
+	<ons-list>
+		<ons-list-header>친구목록</ons-list-header>
+		<ons-list-item ng-repeat="(idx, row) in friendList">
+			<div class='left'>
+				<img src="image/users/a.jpg" class="list__item__thumbnail">
+			</div>
+			<div class='center'>{{row.memName}}({{row.memEmail}})</div>
+			<div class='right'><ons-input type='checkbox' ng-model='row.isCheck'></ons-input></div>
+		</ons-list-item>
+	</ons-list>
+</ons-page>
