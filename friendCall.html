@@ -1,8 +1,23 @@
 <ons-page>
 	<ons-toolbar>
-		<div class="left"> <ons-back-button></ons-back-button></div>
+		<div class="left">
+			<ons-back-button></ons-back-button>
+		</div>
 		<div class="center">들어온 요청</div>
 	</ons-toolbar>
-
-	<p style="text-align : center"> 요청이 없습니다 </p>
+	<ons-list>
+		<ons-list-header>
+			나를 추가한 사람들
+		</ons-list-header>
+		<ons-list-item ng-repeat="(idx, value) in reqFriendList" ng-click="reqAnswer(idx, value)">
+			<div class='left'>
+				<img src="image/users/2.png" class="list__item__thumbnail"></div>
+			</div>
+			<div class='center'>
+				{{value.memName}} ({{value.memEmail}})
+				<!-- <span class='list__item__subtitle' -->
+			</div>
+		</ons-list-item>
+	</ons-list>
+	<!-- <p style="text-align : center"> 요청이 없습니다 </p> -->
 </ons-page>

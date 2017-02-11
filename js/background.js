@@ -12,19 +12,38 @@ var k;
 	CAT_LOGIN = "popup_login";
 	CAT_JOIN = "popup_join";
 	SEARCH_USER = "search_user";
+	REQUEST_FRIEND = "request_friend_list";
+	ADD_FRIEND = "add_friend";
+	ANSWER_REQUEST = "answer_request";
+	NEW_CHATTING = "new_chatting";
 
 	//ETC...
 	USER_ACCOUNT = "account_info";
 	LOGIN = "Login";
 	NOT_LOGIN = "NotLogin";
 
-	//
+	//서버와 통신을 위한 이벤트명 정의
+	//로그인 요청, 응답 
 	REQUEST_LOGIN = "request:login";
 	RESPONSE_LOGIN = "response:login";
+	// 회원가입 요청, 응답
 	REQUEST_JOIN = "request:join";
 	RESPONSE_JOIN = "response:join";
+	// 사용자 검색 요청, 응답
 	REQUEST_SEARCH_USER = "request:search_user";
 	RESPONSE_SEARCH_USER = "response:search_user";
+	// 친구 목록 요청, 응답
+	W_REQUEST_FRIEND_LIST = "request:friend_list";
+	W_RESPONSE_FRIEND_LIST = "request:friend_list";
+	// 친구 추가 요청, 응답 
+	REQUEST_ADDFRIEND = "request:add_friend";
+	RESPONSE_ADDFRIEND = "response:add_friend";
+
+	REQUEST_ANS_REQUEST = "request:answer_request";
+	RESPONSE_ANS_REQUEST = "response:answer_request";
+
+	REQUEST_NEWCHATTING = "request:new_chatting";
+	RESPONSE_NEWCHATTING = "response:new_chatting";
 
 	// Start Define User Informateion
 	var User = function(){
@@ -87,6 +106,7 @@ var k;
 			});
 
 			socket.on(RESPONSE_SEARCH_USER, (res) => {
+				console.log(REQUEST_SEARCH_USER, res);
 				var data = {
 					type	: RESPONSE,
 					category : SEARCH_USER,
@@ -96,6 +116,51 @@ var k;
 				myPort.postMessage(data);
 			});
 
+			socket.on(W_RESPONSE_FRIEND_LIST, (res) => {
+				var data = {
+					type	: RESPONSE,
+					category : REQUEST_FRIEND,
+					isSuccess : res.isSuccess,
+					resultList : res.result
+				}
+				myPort.postMessage(data);
+			});
+
+			socket.on(RESPONSE_ADDFRIEND,  (res) => {
+				var data = {
+					type	: RESPONSE,
+					category : ADD_FRIEND,
+					isSuccess : res.isSuccess,
+					listIdx : res.listIdx
+				};
+				if(!data.isSuccess) data.msg = res.msg;
+				myPort.postMessage(data);
+			});
+
+			socket.on(RESPONSE_ANS_REQUEST, (res) => {
+				var data = {
+					type	: RESPONSE,
+					category : ANSWER_REQUEST,
+					isSuccess : res.isSuccess,
+					listIdx : res.listIdx
+				};
+				if(!data.isSuccess) data.msg = res.msg;
+				myPort.postMessage(data);
+			});
+
+			socket.on(RESPONSE_NEWCHATTING, (res) => {
+				var data = {
+					type	: RESPONSE,
+					category : NEW_CHATTING,
+					isSuccess : res.isSuccess,
+				};
+				if(!data.isSuccess) data.msg = res.msg;
+				else {
+					data.roomName = res.roomName;
+					data.roomHash = res.roomHash;	
+				}
+				myPort.postMessage(data);
+			});
 			// Define PopupPage OnConnect Event
 			chrome.runtime.onConnect.addListener(function(port){
 				if(port.name == "magpie_app"){
@@ -148,6 +213,14 @@ var k;
 				data['input_pwd1'], data['input_pwd2'], client);
 		else if(data.category == SEARCH_USER){
 			wRequestSearchUser(data['memberNum'],data['userEmail'], client);
+		}else if(data.category == REQUEST_FRIEND){
+			wRequestFriendList(data['userNum'], client);
+		}else if(data.category == ADD_FRIEND){
+			wRequestAddFriend(data['fromNum'], data['toNum'], data['listIdx'], client);
+		}else if(data.category == ANSWER_REQUEST){
+			wRequestAnswerRequest(data['fromNum'], data['toNum'], data['listIdx'],client);
+		}else if(data.category == NEW_CHATTING){
+			wRequestNewChatting(data.numList, client);
 		}
 	}
 
@@ -175,6 +248,35 @@ var k;
 			'memNum' : memberNum,
 			'userEmail' : userEmail
 		};
-		wSocket.emit(REQUEST_SEARCH_USER, requestData)
+		console.log(REQUEST_SEARCH_USER, requestData);
+		wSocket.emit(REQUEST_SEARCH_USER, requestData);
+	}
+
+	function wRequestFriendList(userNum, wSocket){
+		var requestData = {
+			'userNum'	: userNum
+		};
+		wSocket.emit(W_REQUEST_FRIEND_LIST, requestData);
+	}
+
+	function wRequestAddFriend(fromNum, toNum, listIdx, wSocket){
+		var requestData = {
+			'fromNum'		: fromNum,
+			'toNum'			: toNum,
+			'listIdx'		: listIdx
+		};
+		wSocket.emit(REQUEST_ADDFRIEND, requestData);
+	}
+
+	function wRequestAnswerRequest(fromNum, toNum, listIdx, wSocket){
+		var requestData = {
+			'fromNum'		: fromNum,
+			'toNum'			: toNum,
+			'listIdx'		: listIdx
+		};
+		wSocket.emit(REQUEST_ANS_REQUEST, requestData);
+	}
+	function wRequestNewChatting(numList, wSocket){
+		wSocket.emit(REQUEST_NEWCHATTING, {'numList' : numList});
 	}
 })();

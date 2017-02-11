@@ -25,7 +25,15 @@
 			</div>
 		</ons-list-item>
 	</ons-list>
-	<ons-fab position="bottom right" ng-click="pageManager.pushPage('AddFriend.html')">
-		<ons-icon icon="fa-user-plus"></ons-icon>
-	</ons-fab>
+	<ons-speed-dial position="bottom right" direction="up">
+		<ons-fab>
+			<ons-icon icon="fa-plus"></ons-icon>
+		</ons-fab>
+		<ons-speed-dial-item ng-click="searchUserView()">
+			<ons-icon icon="fa-search-plus"></ons-icon>
+		</ons-speed-dial-item>
+		<ons-speed-dial-item ng-click="viewRequestFriend()">
+			<ons-icon icon="fa-user-plus"></ons-icon>
+		</ons-speed-dial-item>
+	</ons-speed-dial>
 </ons-page>

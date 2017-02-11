@@ -8,26 +8,21 @@
 
 	<div class="navigation-bar">
 		<div class="navigation-bar__center">
-			 <ons-input ng-model='idSearchField' type="search" class="search-input custom" style="width: 96%; margin: 6px auto 6px auto;" placeholder="Search"
-			  ng-model='inputUser' ng-keypress="searchUser($event)"></ons-input>
+			 <ons-input type="search" class="search-input custom" style="width: 96%; margin: 6px auto 6px auto;" placeholder="Search"
+			  ng-model='inputUser' ng-keypress="searchUser($event, inputUser)"></ons-input>
 		</div>
 	</div>
 
 	<div>
 		<ons-list>
-			<ons-list-item modifier="longdivider" tapplable>
+			<ons-list-item ng-repeat="(idx, value) in searchResult"  ng-click="requestAddFriend(value, idx)" modifier="longdivider" tapplable>
 				<div class="left"><img src="image/users/2.png" class="list__item__thumbnail"></div>
 
 				<div class="center">
-					<span class="list__item__title">김사과</span>
+					{{value.mem_name}}
+					<!-- <span class="list__item__subtitle">김사과</span> -->
 					<!-- <span class="list__item__subtitle">사과는 맛있어</span> -->
 				</div>
-
-				<div class="right">
-					<ons-button>수락</ons-button>
-					<ons-button background="red">거절</ons-button>
-				</div>
-
 			</ons-list-item>
 		</ons-list>
 	</div>

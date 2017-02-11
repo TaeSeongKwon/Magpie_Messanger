@@ -3,6 +3,7 @@ var io 				= require("socket.io")();
 var passwordHash 	= require("password-hash");
 var validator 		= require("validator");
 var mysql 			= require("promise-mysql");
+var crypto			= require("crypto");
 
 var config = {
 	host	 		: "localhost",
@@ -19,7 +20,15 @@ REQUEST_JOIN = "request:join";
 RESPONSE_JOIN = "response:join";
 REQUEST_SEARCH_USER = "request:search_user";
 RESPONSE_SEARCH_USER = "response:search_user";
+W_REQUEST_FRIEND_LIST = "request:friend_list";
+W_RESPONSE_FRIEND_LIST = "request:friend_list";
+REQUEST_ADDFRIEND = "request:add_friend";
+RESPONSE_ADDFRIEND = "response:add_friend";
+REQUEST_ANS_REQUEST = "request:answer_request";
+RESPONSE_ANS_REQUEST = "response:answer_request";
 
+REQUEST_NEWCHATTING = "request:new_chatting";
+RESPONSE_NEWCHATTING = "response:new_chatting";
 //io.use(socketAsPromised());
 io.listen(port);
 
@@ -136,6 +145,7 @@ io.on("connection", (socket) => {
 	socket.on(REQUEST_SEARCH_USER, (reqData) => {
 		var inputEmail = reqData['userEmail'];
 		var memberNum = reqData['memNum'];
+		console.log(REQUEST_SEARCH_USER, reqData);
 		var resData = {
 			isSuccess : true,
 			resultList : null,
@@ -160,6 +170,175 @@ io.on("connection", (socket) => {
 			}
 		)
 	});	
+	socket.on(W_REQUEST_FRIEND_LIST, (req) => {
+		var userNum = req.userNum;
+		var connection;
+		var resData = {
+			isSuccess : true,
+			result 		: []
+		};
+		mysql.createConnection(config).then(
+			(conn) => {
+				var selectQuery = "SELECT M.mem_num AS memNum, M.mem_name AS memName, M.mem_email AS memEmail FROM FRIEND AS F LEFT OUTER JOIN MEMBER AS M ON F.from_num = M.mem_num  WHERE F.from_num NOT IN (SELECT friend_num FROM friend_list_view WHERE memberNum = ?) AND F.to_num = ? AND F.is_interception = false";
+				connection = conn;
+				return connection.query(selectQuery, [userNum, userNum]);
+			}
+		).then(
+			(result) => {
+				resData.result = result;
+				socket.emit(W_RESPONSE_FRIEND_LIST, resData);
+				connection.end();
+			},
+			(error) => {
+				resData.isSuccess = false;
+				socket.emit(W_RESPONSE_FRIEND_LIST, resData);
+				connection.end();
+			}
+		)
+	});
+
+	socket.on(REQUEST_ADDFRIEND, (req) => {
+		var connection;
+		var resData = {
+			'isSuccess' : true,
+			'listIdx' : req.listIdx
+		};
+		mysql.createConnection(config).then(
+			(conn) => {
+				var insertQuery = "INSERT INTO FRIEND (`from_num`, `to_num`) VALUES (? , ?)";
+				connection = conn;
+				return connection.query(insertQuery,[req.fromNum, req.toNum]);
+			}
+		).then(
+			(result) => {
+				socket.emit(RESPONSE_ADDFRIEND, resData);
+				connection.end();
+			},
+			(error) => {
+				resData.isSuccess = false;
+				resData.msg = "문제가 발생하여 친구를 추가할 수 없습니다. 관리자에게 문의하세요.";
+				socket.emit(RESPONSE_ADDFRIEND, resData);
+				connection.end();
+			}
+		)
+	});
+
+	socket.on(REQUEST_ANS_REQUEST, (req) => {
+		var connection;
+		var resData = {
+			isSuccess : true,
+			listIdx		: req.listIdx
+
+		};
+		mysql.createConnection(config).then(
+			(conn)	=> {
+				var insertQuery = "INSERT INTO FRIEND (`from_num`, `to_num`) VALUES (? , ?)";
+				connection = conn;
+				return connection.query(insertQuery, [req.fromNum, req.toNum]);
+			}
+		).then(
+			(result) => {
+				socket.emit(RESPONSE_ANS_REQUEST, resData);
+			},
+			(error)	=> {
+				resData.isSuccess = false;
+				resData.msg	= "문제가 발생하여 응답할 수 없습니다. 관리자에게 문의하세요";
+				socket.emit(RESPONSE_ANS_REQUEST, resData);
+				connection.end();
+			}
+		)
+	});
+
+	socket.on(REQUEST_NEWCHATTING, (req) => {
+		var numList = req.numList;
+		var crrTime = new Date();
+		var roomName = "Room_" + crrTime;
+		var encoder = crypto.createHash('sha1');
+		encoder.update(roomName);
+		var hashName = encoder.digest("hex");
+		var connection;
+		var resData = {
+			isSuccess : true
+		};
+
+		mysql.createConnection(config).then(
+			(conn) => {
+				var insertQuery = "INSERT INTO CHATTING_ROOM (`room_name`) VALUES ( ? )";
+				connection = conn;
+				return connection.query(insertQuery, [hashName]);
+			}	
+		).then(
+			(result) => {
+				var insertId = result.insertId;
+				console.log("SUCCESS! : ", result);
+				console.log("room_num : ", result.insertId);
+				setRoomName(insertId, hashName, numList, socket, resData);
+				connection.end();
+			},
+			(error) => {
+				resData.isSuccess = false;
+				console.log(error);
+				resData.msg = "대화방을 생성하지 못했습니다. error -1";
+				socket.emit(RESPONSE_NEWCHATTING, resData);
+				connection.end();
+			}
+		)
+	});
+
+	function setRoomName(roomId, roomHash, numList, wSocket, resData){
+		var connection;
+		mysql.createConnection(config).then(
+			(conn) => {
+				var selectQuery = "SELECT mem_name FROM MEMBER WHERE mem_num IN ( ? )";
+				connection = conn;
+				return connection.query(selectQuery, [numList]);
+			}
+		).then(
+			(result) => {
+				var roomName = "";
+				for(var idx = 0; idx < result.length; idx++){
+					roomName += result[idx]['mem_name'];
+					if(idx+1 < result.length) roomName += ", ";
+				}
+				connection.end();
+				insertRoomMember(roomId, roomHash, roomName, numList, wSocket, resData);
+			},
+			(error) => {
+				resData.isSuccess = false;
+				console.log(error);
+				resData.msg = "대화방을 생성하지 못했습니다. error -2";
+				socket.emit(RESPONSE_NEWCHATTING, resData);
+				connection.end();
+			}
+		);
+	}
+	function insertRoomMember(roomId, roomHash, roomName, numList, wSocket, resData){
+		var connection;
+		mysql.createConnection(config).then(
+			(conn) => {
+				var insertList = [];
+				for(var idx in numList) 
+					insertList.push([roomName, roomId, numList[idx]]);
+				var insertQuery = "INSERT INTO ROOM_MEMBER (`rm_name`,`room_num`,`mem_num`) VALUES ?";
+				connection = conn;
+				return connection.query(insertQuery, [insertList]);
+			}
+		).then(
+			(result) => {
+				resData.roomName = roomName;
+				resData.roomHash = roomHash;
+				socket.emit(RESPONSE_NEWCHATTING, resData);
+				connection.end();
+			},
+			(error) => {
+				resData.isSuccess = false;
+				resData.msg = "대화방을 생성하지 못했습니다. error -3";
+				console.log(error);console.log(error);
+				socket.emit(RESPONSE_NEWCHATTING, resData);
+				connection.end();
+			}
+		);
+	}
 	// mysql.createConnection(config).then(
 	// 	function(conn){
 	// 		var selectQuery = "SELECT * FROM MEMBER";
@@ -212,7 +391,7 @@ io.on("connection", (socket) => {
 		).then(
 			(result) => {
 				res['friendList'] = result;
-				socket.emit(RESPONSE_LOGIN, res);		
+				socket.emit(RESPONSE_LOGIN, res);	
 			},
 			(error) => {
 				res['friendList'] = null;
