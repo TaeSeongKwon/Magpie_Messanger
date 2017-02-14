@@ -20,6 +20,7 @@ var k;
 	GO_CH_ROOM	= "go_to_chatting_room";
 	SEND_MESSAGE = "send_message";
 	RECEIVE_MESSAGE = "receive_message";
+	NEW_ROOM = "new_room";
 
 	//ETC...
 	USER_ACCOUNT = "account_info";
@@ -56,6 +57,7 @@ var k;
 	RESPONSE_SEND_MESSAGE = "response:send_message";
 
 	NEW_MESSAGE = "push:new_message";
+	NEW_CHATTING_ROOM = "push:new_chatting_room";
 
 	// Start Define User Informateion
 	var User = function(){
@@ -221,6 +223,11 @@ var k;
 				myPort.postMessage(data);
 			});
 
+			socket.on(NEW_CHATTING_ROOM, (pushData) => {
+				pushData['type'] 		= NOTIFY;
+				pushData['category'] 	= NEW_ROOM;
+				myPort.postMessage(pushData);
+			});
 			// Define PopupPage OnConnect Event
 			chrome.runtime.onConnect.addListener(function(port){
 				if(port.name == "magpie_app"){

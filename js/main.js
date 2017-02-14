@@ -18,6 +18,8 @@ NEW_CHATTING = "new_chatting";
 GO_CH_ROOM	= "go_to_chatting_room";
 SEND_MESSAGE = "send_message";
 RECEIVE_MESSAGE = "receive_message";
+NEW_ROOM = "new_room";
+
 
 var module = angular.module('magpie_front', ['onsen']);
 module.controller('AppController', function($scope, $timeout){ 
@@ -55,6 +57,15 @@ module.controller('AppController', function($scope, $timeout){
 				// $scope.roomInfo.messages.push(tmp);
 				// $scope.messageText = "";
 				
+			}else if(data.category == NEW_ROOM){
+				var room = {					
+					"mem_num" 			: 		data.mem_num,
+					"room_hash" 		: 		data.room_hash,
+					"room_name" 		: 		data.room_name,
+					"room_num" 			: 		data.room_num
+				};
+				$scope.chRoomList.unshift(room);
+				$scope.$apply();
 			}
 		}else if(data.type == RESPONSE){
 			console.log("Response : ", data);
@@ -111,6 +122,13 @@ module.controller('AppController', function($scope, $timeout){
 					$scope.roomInfo.title = data.roomName;
 					$scope.roomInfo.hash = data.roomHash;
 					$scope.roomInfo.roomNum = data.roomNum;
+					var room = {
+						"room_num"			:  		data.roomNum,
+						"room_hash" 		: 		data.roomHash,
+						"room_name"	 		: 		data.roomName,
+						"mem_num" 			: 		$scope.userProfile['userNum']
+					};
+					$scope.chRoomList.unshift(room);
 					pageManager.replacePage("chattingRoom.html");
 				}
 			}else if(data.category == GO_CH_ROOM){
@@ -153,8 +171,6 @@ module.controller('AppController', function($scope, $timeout){
 						$('.page__content').animate({scrollTop: $('.message.list').height()}, 300);
 					});
 					// $scope.messageText = "";
-					
-
 				}
 			}
 			// onData(data);
@@ -323,4 +339,5 @@ module.controller('AppController', function($scope, $timeout){
 		};
 		port.postMessage(reqData);
 	}
+
 });

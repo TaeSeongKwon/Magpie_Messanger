@@ -43,6 +43,7 @@ REQUEST_SEND_MESSAGE = "request:send_message";
 RESPONSE_SEND_MESSAGE = "response:send_message";
 
 NEW_MESSAGE = "push:new_message";
+NEW_CHATTING_ROOM = "push:new_chatting_room";
 
 //io.use(socketAsPromised());
 io.listen(port);
@@ -74,6 +75,8 @@ io.on("connection", (socket) => {
 						resData.isSuccess = false;
 						socket.emit(RESPONSE_LOGIN, resData);
 					}else{ 
+						socket.myID = "user_"+result[0]['mem_num'];
+						socket.join(socket.myID);
 						var data = {
 							'userNum'	: result[0]['mem_num'],
 							'userEmail' : result[0]['mem_email'],
@@ -434,6 +437,19 @@ io.on("connection", (socket) => {
 				resData.roomName = roomName;
 				resData.roomHash = roomHash;
 				resData.roomNum = roomId;
+				for(var idx in numList){
+
+					var friendID = "user_"+numList[idx];
+					if(socket.myID == friendID ) continue;
+					var pushData = {
+						"mem_num" 			: 		numList[idx],
+						"room_hash" 		: 		roomHash,
+						"room_name" 		: 		roomName,
+						"room_num" 			: 		roomId
+					};
+
+					socket.broadcast.to(friendID).emit(NEW_CHATTING_ROOM, pushData);
+				}
 				socket.emit(RESPONSE_NEWCHATTING, resData);
 				connection.end();
 			},
@@ -446,19 +462,6 @@ io.on("connection", (socket) => {
 			}
 		);
 	}
-	// mysql.createConnection(config).then(
-	// 	function(conn){
-	// 		var selectQuery = "SELECT * FROM MEMBER";
-	// 		return conn.query(selectQuery);
-	// 	}
-	// ).then(
-	// 	function(rows){
-	// 		console.log("SUCCESS : ", rows);
-	// 	},
-	// 	function(error){
-	// 		console.log("ERROR : ", error);
-	// 	}
-	// );
 
 	// 새로운 계정을 추가하는 메소드
 	function addMember(inputName, inputEmail, inputPwd, resData){
