@@ -122,8 +122,8 @@ module.controller('AppController', function($scope, $timeout){
 					$scope.roomInfo.title = data.roomName;
 					$scope.roomInfo.hash = data.roomHash;
 					$scope.roomInfo.roomNum = data.roomNum;
-					$scope.messageCollection.set(data.roomHash, []);
-					
+					$scope.roomInfo.messages = [];
+					$scope.messageCollection.set(data.roomHash, $scope.roomInfo.messages);
 					var room = {
 						"room_num"			:  		data.roomNum,
 						"room_hash" 		: 		data.roomHash,
