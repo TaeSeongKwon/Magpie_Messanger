@@ -20,11 +20,12 @@ SEND_MESSAGE = "send_message";
 RECEIVE_MESSAGE = "receive_message";
 
 var module = angular.module('magpie_front', ['onsen']);
-module.controller('AppController', function($scope){ 
+module.controller('AppController', function($scope, $timeout){ 
 	var port = chrome.runtime.connect({name : "magpie_app"});
 	$scope.searchResult =  [];
 	$scope.reqFriendList =  [];
 	$scope.roomInfo = {};
+	$scope.messageCollection = new Map();
 	// $scope.messageRoom = new Map();
 
 	port.onMessage.addListener(function(data){
@@ -46,10 +47,14 @@ module.controller('AppController', function($scope){
 					'room_num'		: 			info.roomNum,
 					'user_type' 	: 			0
 				};
-
-				$scope.roomInfo.messages.push(tmp);
-				// $scope.messageText = "";
+				$scope.messageCollection.get(info.roomHash).push(tmp);
 				$scope.$apply();
+				$timeout(function(){
+					$('.page__content').animate({scrollTop: $('.message.list').height()}, 300);
+				});
+				// $scope.roomInfo.messages.push(tmp);
+				// $scope.messageText = "";
+				
 			}
 		}else if(data.type == RESPONSE){
 			console.log("Response : ", data);
@@ -118,8 +123,13 @@ module.controller('AppController', function($scope){
 					$scope.roomInfo.hash = info['room_hash'];
 					$scope.roomInfo.roomNum = info['room_num'];
 					$scope.roomInfo.messages = data['messageList'];
-
-					pageManager.pushPage("chattingRoom.html");
+					
+					$scope.messageCollection.set(info.room_hash, data['messageList']);
+					pageManager.pushPage("chattingRoom.html").then(
+						(success) => {
+							$('.page__content').animate({scrollTop: $('.message.list').height()}, 0);
+						}
+					);
 				}
 			}else if(data.category == SEND_MESSAGE){
 				if(!data.isSuccess){
@@ -135,10 +145,15 @@ module.controller('AppController', function($scope){
 						'room_num'		: 			info.roomNum,
 						'user_type' 	: 			1
 					};
-
-					$scope.roomInfo.messages.push(tmp);
-					// $scope.messageText = "";
+					console.log("SCOPE", $scope.messageCollection);
+					// $scope.roomInfo.messages.push(tmp);
+					$scope.messageCollection.get(info.roomHash).push(tmp);
 					$scope.$apply();
+					$timeout(function(){
+						$('.page__content').animate({scrollTop: $('.message.list').height()}, 300);
+					});
+					// $scope.messageText = "";
+					
 
 				}
 			}
