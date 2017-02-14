@@ -58,6 +58,7 @@ var k;
 
 	NEW_MESSAGE = "push:new_message";
 	NEW_CHATTING_ROOM = "push:new_chatting_room";
+	REQUEST_JOIN_ROOM = "request:join_hash_room";
 
 	// Start Define User Informateion
 	var User = function(){
@@ -226,6 +227,7 @@ var k;
 			socket.on(NEW_CHATTING_ROOM, (pushData) => {
 				pushData['type'] 		= NOTIFY;
 				pushData['category'] 	= NEW_ROOM;
+				socket.emit(REQUEST_JOIN_ROOM, {'roomHash' : pushData['room_hash']});
 				myPort.postMessage(pushData);
 			});
 			// Define PopupPage OnConnect Event

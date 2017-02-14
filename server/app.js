@@ -44,6 +44,7 @@ RESPONSE_SEND_MESSAGE = "response:send_message";
 
 NEW_MESSAGE = "push:new_message";
 NEW_CHATTING_ROOM = "push:new_chatting_room";
+REQUEST_JOIN_ROOM = "request:join_hash_room";
 
 //io.use(socketAsPromised());
 io.listen(port);
@@ -382,6 +383,11 @@ io.on("connection", (socket) => {
 		)
 	});
 
+	socket.on(REQUEST_JOIN_ROOM, (req) => {
+		console.log("join room hash : ", req.roomHash);
+		socket.join(req.roomHash);
+	});
+
 	function setRoomName(roomId, roomHash, numList, wSocket, resData){
 		var connection;
 		mysql.createConnection(config).then(
@@ -447,7 +453,6 @@ io.on("connection", (socket) => {
 						"room_name" 		: 		roomName,
 						"room_num" 			: 		roomId
 					};
-
 					socket.broadcast.to(friendID).emit(NEW_CHATTING_ROOM, pushData);
 				}
 				socket.emit(RESPONSE_NEWCHATTING, resData);
