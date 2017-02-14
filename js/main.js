@@ -17,6 +17,7 @@ ANSWER_REQUEST = "answer_request";
 NEW_CHATTING = "new_chatting";
 GO_CH_ROOM	= "go_to_chatting_room";
 SEND_MESSAGE = "send_message";
+RECEIVE_MESSAGE = "receive_message";
 
 var module = angular.module('magpie_front', ['onsen']);
 module.controller('AppController', function($scope){ 
@@ -33,6 +34,23 @@ module.controller('AppController', function($scope){
 			// window.onclose = function(){
 			// 	port.postMessage({type : CLOSE_POPUP});
 			// }
+		}else if(data.type== NOTIFY){
+			if(data.category == RECEIVE_MESSAGE){
+				var info = data.messageInfo;
+				var tmp = {
+					'cm_num' 		:  			0,
+					'cm_text' 		: 			info.message,
+					'cm_date' 		: 			info.sendDate,
+					'mem_name'		: 			info.userName,
+					'mem_num' 		: 			info.userNum,
+					'room_num'		: 			info.roomNum,
+					'user_type' 	: 			0
+				};
+
+				$scope.roomInfo.messages.push(tmp);
+				// $scope.messageText = "";
+				$scope.$apply();
+			}
 		}else if(data.type == RESPONSE){
 			console.log("Response : ", data);
 			if(data.category == STATUS){
@@ -86,6 +104,8 @@ module.controller('AppController', function($scope){
 				else {
 					$scope.roomInfo = {};
 					$scope.roomInfo.title = data.roomName;
+					$scope.roomInfo.hash = data.roomHash;
+					$scope.roomInfo.roomNum = data.roomNum;
 					pageManager.replacePage("chattingRoom.html");
 				}
 			}else if(data.category == GO_CH_ROOM){

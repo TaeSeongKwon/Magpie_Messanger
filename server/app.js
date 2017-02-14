@@ -433,6 +433,7 @@ io.on("connection", (socket) => {
 			(result) => {
 				resData.roomName = roomName;
 				resData.roomHash = roomHash;
+				resData.roomNum = roomId;
 				socket.emit(RESPONSE_NEWCHATTING, resData);
 				connection.end();
 			},
@@ -506,8 +507,11 @@ io.on("connection", (socket) => {
 				console.log("LOGIN SUCCESS => Get User Info");
 				res['chRoomList'] = result[0];
 				var list = result[0];
-				
-				for(var idx in list) socket.join(list[idx]['room_hash']);
+
+				for(var idx in list){
+					console.log("ROOM HASH("+(idx+1)+") : ", list[idx]['room_hash']);
+				 	socket.join(list[idx]['room_hash']);
+				}
 				
 				res['friendList'] = result[1];
 				socket.emit(RESPONSE_LOGIN, res);	

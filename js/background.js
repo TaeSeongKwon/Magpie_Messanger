@@ -5,6 +5,7 @@ var k;
 	REQUEST = "request";
 	RESPONSE = "response";
 	CONNECT = "connect";
+	NOTIFY = "notification";
 	CLOSE_POPUP = "close_popup";
 	
 	// Define Category
@@ -18,6 +19,7 @@ var k;
 	NEW_CHATTING = "new_chatting";
 	GO_CH_ROOM	= "go_to_chatting_room";
 	SEND_MESSAGE = "send_message";
+	RECEIVE_MESSAGE = "receive_message";
 
 	//ETC...
 	USER_ACCOUNT = "account_info";
@@ -176,7 +178,8 @@ var k;
 				if(!data.isSuccess) data.msg = res.msg;
 				else {
 					data.roomName = res.roomName;
-					data.roomHash = res.roomHash;	
+					data.roomHash = res.roomHash;
+					data.roomNum = res.roomNum;
 				}
 				myPort.postMessage(data);
 			});
@@ -206,8 +209,16 @@ var k;
 
 				myPort.postMessage(data);
 			});
-			socket.on(NEW_MESSAGE, (data) => {
+
+			socket.on(NEW_MESSAGE, (pushData) => {
 				console.log(data);
+				// data.user_type = 0;
+				var data = {
+					type 		 : 		NOTIFY,
+					category 	 : 		RECEIVE_MESSAGE,
+					messageInfo  : 		pushData
+				};
+				myPort.postMessage(data);
 			});
 
 			// Define PopupPage OnConnect Event
