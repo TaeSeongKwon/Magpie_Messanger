@@ -1,0 +1,15 @@
+<ons-page>
+	<section id='mainLogoSection'>
+		<img id='mainLogo' src='image/magpie_main.png'>
+	</section>
+	<section style="text-align : center;">
+		<p>
+			<ons-input class="loginInput" modifier="underbar" ng-model="loginEmail" placeholder="Email" ></ons-input>
+		</p>
+		<p>
+			<ons-input class="loginInput" modifier="underbar" ng-model="loginPwd" type="password" placeholder="Password" ></ons-input>
+		</p>
+		<p><ons-button modifier="quiet" ng-click="pageManager.pushPage('accountPage.html')">계정이 없으신가요?</ons-button></p>
+		<p id='loginBtnSection'><ons-button modifier="large" ng-click="requestLogin(loginEmail, loginPwd)">로그인</ons-button></p>
+	</section>
+</ons-page>
