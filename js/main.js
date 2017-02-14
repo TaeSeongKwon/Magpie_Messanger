@@ -122,6 +122,8 @@ module.controller('AppController', function($scope, $timeout){
 					$scope.roomInfo.title = data.roomName;
 					$scope.roomInfo.hash = data.roomHash;
 					$scope.roomInfo.roomNum = data.roomNum;
+					$scope.messageCollection.set(data.roomHash, []);
+					
 					var room = {
 						"room_num"			:  		data.roomNum,
 						"room_hash" 		: 		data.roomHash,
@@ -129,6 +131,7 @@ module.controller('AppController', function($scope, $timeout){
 						"mem_num" 			: 		$scope.userProfile['userNum']
 					};
 					$scope.chRoomList.unshift(room);
+
 					pageManager.replacePage("chattingRoom.html");
 				}
 			}else if(data.category == GO_CH_ROOM){
