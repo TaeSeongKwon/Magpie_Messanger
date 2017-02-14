@@ -453,8 +453,10 @@ io.on("connection", (socket) => {
 						"room_name" 		: 		roomName,
 						"room_num" 			: 		roomId
 					};
+
 					socket.broadcast.to(friendID).emit(NEW_CHATTING_ROOM, pushData);
 				}
+				socket.join(resData.roomHash);
 				socket.emit(RESPONSE_NEWCHATTING, resData);
 				connection.end();
 			},

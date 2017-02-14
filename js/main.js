@@ -145,7 +145,7 @@ module.controller('AppController', function($scope, $timeout){
 					$scope.roomInfo.roomNum = info['room_num'];
 					$scope.roomInfo.messages = data['messageList'];
 					
-					$scope.messageCollection.set(info.room_hash, data['messageList']);
+					$scope.messageCollection.set(info['room_hash'], data['messageList']);
 					pageManager.pushPage("chattingRoom.html").then(
 						(success) => {
 							$('.page__content').animate({scrollTop: $('.message.list').height()}, 0);
