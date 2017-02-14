@@ -14,28 +14,29 @@
 		<div class="center">
 			<ons-row>
 				<ons-col class="messageInput" vertical-align="center">
-					<ons-input modifier="underbar" type="search" placeholder="메시지를 입력하세요..."></ons-input>
+					<ons-input modifier="underbar" ng-model="messageText" type="search" placeholder="메시지를 입력하세요..." ng-keypress="roomKeyEvent($event, roomInfo.hash, roomInfo.roomNum, messageText)" ></ons-input>
 				</ons-col>
 				<ons-col width="75px" class="messageInput" vertical-align="center">
-					<ons-button>보내기</ons-button>
+					<ons-button ng-click="sendMessage(roomInfo.hash, roomInfo.roomNum, messageText)">보내기</ons-button>
 				</ons-col>
 			</ons-row>
 		</div>
 		<div class="right">
 		</div>
 	</ons-bottom-toolbar>
-	<ons-list>
-		<ons-list-item class="message me" modifier="nodivider">
-			Hello!
+	<ons-list class="message">
+		<ons-list-item ng-repeat="(idx, row) in roomInfo.messages" modifier="nodivider">
+			<div ng-if='row.user_type == 1' class="message me">
+				<div class="list__item__title">나</div>
+				<div class="list__item__subtitle">{{row.cm_text}}</div>
+			</div>
+			<div ng-if='row.user_type == 0' class="message other">
+				<div class="list__item__title">{{row.mem_name}}</div>
+				<div class="list__item__subtitle">{{row.cm_text}}</div>
+			</div>
+			<div ng-if='row.user_type == -1' class="message system">
+				{{row.cm_text}}
+			</div>
 		</ons-list-item>
-		<ons-list-item class="message other" modifier="nodivider">
-			World!
-		</ons-list-item>
-		<ons-list-item modifier="nodivider"></ons-list-item>
-		<ons-list-item modifier="nodivider"></ons-list-item>
-		<ons-list-item modifier="nodivider"></ons-list-item>
-		<ons-list-item modifier="nodivider"></ons-list-item>
-
-		
 	</ons-list>
 </ons-page>

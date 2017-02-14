@@ -10,27 +10,15 @@
       </div>
     </div>
 	<ons-list>
-		<ons-list-item modifier="longdivider" tappable >
+		<ons-list-item ng-repeat="(idx, room) in chRoomList"modifier="longdivider" tappable ng-click="goChattingRoom(room.room_num, idx)">
 			<div class="left">
 				<ons-icon icon="fa-comment"></ons-icon>
 			</div>
 			<div class="center">
-				<span class="list__item__title">Hello</span>
-				<span class="list__item__subtitle">myFriend!</span>
+				<span class="list__item__title">{{room.room_name}}</span>
+				<!-- <span class="list__item__subtitle">myFriend!</span> -->
 			</div>
 		</ons-list-item>
-		<ons-list-item modifier="longdivider"></ons-list-item>
-		<ons-list-item modifier="longdivider"></ons-list-item>
-		<ons-list-item modifier="longdivider"></ons-list-item>
-		<ons-list-item modifier="longdivider"></ons-list-item>
-		<ons-list-item modifier="longdivider"></ons-list-item>
-		<ons-list-item modifier="longdivider"></ons-list-item>
-		<ons-list-item modifier="longdivider"></ons-list-item>
-		<ons-list-item modifier="longdivider"></ons-list-item>
-		<ons-list-item modifier="longdivider"></ons-list-item>
-		<ons-list-item modifier="longdivider"></ons-list-item>
-		<ons-list-item modifier="longdivider"></ons-list-item>
-		<ons-list-item modifier="longdivider"></ons-list-item>
 	</ons-list>
 	<ons-fab position="bottom right" ng-click="newChatting()">
 		<ons-icon icon="fa-comments"></ons-icon>

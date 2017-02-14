@@ -12,23 +12,38 @@ var config = {
 	database		: "MAGPIE_DB"
 };
 var port = 9900;
+UNIT_LIST = 50;
 
 // Define Communication Event Name
 REQUEST_LOGIN = "request:login";
 RESPONSE_LOGIN = "response:login";
+
 REQUEST_JOIN = "request:join";
 RESPONSE_JOIN = "response:join";
+
 REQUEST_SEARCH_USER = "request:search_user";
 RESPONSE_SEARCH_USER = "response:search_user";
+
 W_REQUEST_FRIEND_LIST = "request:friend_list";
 W_RESPONSE_FRIEND_LIST = "request:friend_list";
+
 REQUEST_ADDFRIEND = "request:add_friend";
 RESPONSE_ADDFRIEND = "response:add_friend";
+
 REQUEST_ANS_REQUEST = "request:answer_request";
 RESPONSE_ANS_REQUEST = "response:answer_request";
 
 REQUEST_NEWCHATTING = "request:new_chatting";
 RESPONSE_NEWCHATTING = "response:new_chatting";
+
+REQUEST_GO_CH_ROOM = "request:go_chatting_room";
+RESPONSE_GO_CH_ROOM = "response:go_chatting_room";
+
+REQUEST_SEND_MESSAGE = "request:send_message";
+RESPONSE_SEND_MESSAGE = "response:send_message";
+
+NEW_MESSAGE = "push:new_message";
+
 //io.use(socketAsPromised());
 io.listen(port);
 
@@ -168,7 +183,7 @@ io.on("connection", (socket) => {
 				socket.emit(RESPONSE_SEARCH_USER, resData);
 				connection.end();
 			}
-		)
+		);
 	});	
 	socket.on(W_REQUEST_FRIEND_LIST, (req) => {
 		var userNum = req.userNum;
@@ -285,6 +300,85 @@ io.on("connection", (socket) => {
 		)
 	});
 
+	socket.on(REQUEST_GO_CH_ROOM, (req) => {
+		var userNum = req.userNum;
+		var roomNum = req.roomNum;
+		var listIdx = req.listIdx;
+		var page = 0;
+		var connection;
+		var resData = {
+			'isSuccess' 		: 		true,
+			'listIdx'			: 		listIdx,
+			'messageList' 		: 		[]
+		};
+
+		mysql.createConnection(config).then(
+			(conn) => {
+				var selectQuery = "SELECT TMP.*, if(mem_num = ?, 1, if(mem_num = 0, -1, 0)) AS user_type FROM (SELECT * FROM message_view WHERE room_num = ? ORDER BY cm_date DESC LIMIT ? OFFSET ?) AS TMP ORDER BY TMP.cm_num";
+				connection = conn;
+				return connection.query(selectQuery, [userNum, roomNum, UNIT_LIST, (UNIT_LIST * page)]);
+			}
+		).then(
+			(result) => {
+				resData.messageList = result;
+				socket.emit(RESPONSE_GO_CH_ROOM, resData);
+				connection.end();
+			},
+			(error) => {
+				resData.isSuccess = false;
+				console.log("error : ", error);
+				resData.msg = "문제가 발생하여 메시지를 가져오지 못했습니다!";
+				socket.emit(RESPONSE_GO_CH_ROOM, resData);
+				connection.end();
+			}
+		);
+		
+	});
+
+	socket.on(REQUEST_SEND_MESSAGE, (req) => {
+		var roomHash = req['roomHash'];
+		var roomNum = req['roomNum'];
+		var userNum = req['userNum'];
+		var userName = req['userName'];
+		var message = req['message'];
+		var crrTime = new Date().getTime();
+		var connection;
+		var resData = {
+			'isSuccess' 		: 		true,
+
+		}
+		mysql.createConnection(config).then(
+			(conn) => {
+				console.log(req);
+				var insertQuery = "INSERT INTO CHATTING_MESSAGE(`mem_num`,`room_num`,`cm_text`,`cm_date`) VALUES ( ?, ?, ?, ?)";
+				connection = conn;
+				return connection.query(insertQuery, [userNum, roomNum, message, crrTime]);
+			}
+		).then(
+			(result) => {
+				var messageInfo = {
+					"roomHash" 		 : 			roomHash,
+					"roomNum" 		 : 			roomNum,
+					"userName"		 : 			userName,
+					"userNum"		 : 			userNum,
+					"message" 		 : 			message,
+					"sendDate" 		 : 			crrTime
+				};
+				resData.messageInfo = messageInfo;
+				socket.broadcast.to(roomHash).emit(NEW_MESSAGE, messageInfo);
+				socket.emit(RESPONSE_SEND_MESSAGE, resData);
+				connection.end();
+			},
+			(error)  => {
+				console.log(error);
+				resData.isSuccess = false;
+				resData.msg = "메시지를 전송하지 못했습니다!";
+				socket.emit(RESPONSE_SEND_MESSAGE, resData);
+				connection.end();
+			}
+		)
+	});
+
 	function setRoomName(roomId, roomHash, numList, wSocket, resData){
 		var connection;
 		mysql.createConnection(config).then(
@@ -314,14 +408,26 @@ io.on("connection", (socket) => {
 	}
 	function insertRoomMember(roomId, roomHash, roomName, numList, wSocket, resData){
 		var connection;
-		mysql.createConnection(config).then(
+		var customConfig = {
+			host				 : 			config.host,
+			user 				 : 			config.user,
+			password 			 : 			config.password,
+			database 			 : 			config.database,
+			multipleStatements 	 : 			true
+		};
+		mysql.createConnection(customConfig).then(
 			(conn) => {
-				var insertList = [];
-				for(var idx in numList) 
-					insertList.push([roomName, roomId, numList[idx]]);
-				var insertQuery = "INSERT INTO ROOM_MEMBER (`rm_name`,`room_num`,`mem_num`) VALUES ?";
+				var insertList1 = [];
+				var insertList2 = [];
+				var myTime = new Date().getTime();
+				for(var idx in numList){ 
+					insertList2.push([roomName, roomId, numList[idx]]);
+					insertList1.push([numList[idx], roomId, myTime]);
+				}
+				var insertQuery = "INSERT INTO ACCESS_LOG (`mem_num`, `room_num`, `log_date`) VALUES ? ;INSERT INTO ROOM_MEMBER (`rm_name`,`room_num`,`mem_num`) VALUES ? ";
+
 				connection = conn;
-				return connection.query(insertQuery, [insertList]);
+				return connection.query(insertQuery, [insertList1,insertList2]);
 			}
 		).then(
 			(result) => {
@@ -381,25 +487,39 @@ io.on("connection", (socket) => {
 	// 로그인 성공 시 전달하고자하는 정보를 조회하여 보낸다.
 	function loginMember(memberNum,res){
 		var connection;
-
-		mysql.createConnection(config).then(
+		var customConfig = {
+			host 		: 		config.host,
+			user 		: 		config.user,
+			password 	: 		config.password,
+			database 	: 		config.database,
+			multipleStatements : true
+		};
+		
+		mysql.createConnection(customConfig).then(
 			(conn) => {
-				var selectQuery = "SELECT mem_num AS memNum, mem_name AS memName, mem_email AS memEmail FROM FRIEND AS F LEFT OUTER JOIN MEMBER AS M ON F.to_num = M.mem_num WHERE F.from_num = ? AND F.is_interception = false;"
+				var selectQuery = "SELECT * FROM MAGPIE_DB.chatting_room_view WHERE mem_num = ?;SELECT mem_num AS memNum, mem_name AS memName, mem_email AS memEmail FROM FRIEND AS F LEFT OUTER JOIN MEMBER AS M ON F.to_num = M.mem_num WHERE F.from_num = ? AND F.is_interception = false"
 				connection = conn;
-				return connection.query(selectQuery, [memberNum]);
+				return connection.query(selectQuery, [memberNum, memberNum]);
 			}
 		).then(
 			(result) => {
-				res['friendList'] = result;
+				console.log("LOGIN SUCCESS => Get User Info");
+				res['chRoomList'] = result[0];
+				var list = result[0];
+				
+				for(var idx in list) socket.join(list[idx]['room_hash']);
+				
+				res['friendList'] = result[1];
 				socket.emit(RESPONSE_LOGIN, res);	
+				connection.end();
 			},
 			(error) => {
 				res['friendList'] = null;
-				socket.emit(RESPONSE_LOGIN, res);	
+				socket.emit(RESPONSE_LOGIN, res);
+				connection.end();	
 			}
 		);
-		
-		// var connection;
-		// mysql.createConnection()
 	}
+
+	// function 
 });

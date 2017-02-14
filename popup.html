@@ -48,35 +48,28 @@
 			.search-input.custom .text-input{
 				padding : 0px 4px;
 			}
+			.message.system{
+			    
+			}
+			.message.me{
+				width: 100%;
+				text-align: right;
+			}
+			.message.other{
+				width: 100%;
+				text-align: left;
+			}
+			ons-list.message{
+				border-bottom : none !important;
+			}
 		</style>
 
 	</head>
 	<body ng-controller="AppController">
-		<ons-navigator var="pageManager" page='loginPage.html' ></ons-navigator>
-		<!-- Start Login Page -->
-		<ons-template id='loginPage.html'>
-			<ons-page>
-				<ons-modal var="loginModal">
-					<ons-progress-circular indeterminate></ons-progress-circular>
-				</ons-modal>
-				<section id='mainLogoSection'>
-					<img id='mainLogo' src='image/magpie_main.png'>
-				</section>
-				<section style="text-align : center;">
-					<p>
-						<ons-input class="loginInput" modifier="underbar" ng-model="loginEmail" placeholder="Email" ></ons-input>
-					</p>
-					<p>
-						<ons-input class="loginInput" modifier="underbar" ng-model="loginPwd" type="password" placeholder="Password" ></ons-input>
-					</p>
-					<p><ons-button modifier="quiet" ng-click="pageManager.pushPage('accountPage.html')">계정이 없으신가요?</ons-button></p>
-					<p id='loginBtnSection'><ons-button modifier="large" ng-click="requestLogin(loginEmail, loginPwd)">로그인</ons-button></p>
-				</section>
-			</ons-page>
-		</ons-template>
-		<!-- End Login Page -->
-
-		<!-- Start Main Page -->
+		<ons-navigator var="pageManager" page='splash.html' ></ons-navigator>
+		<ons-modal var="loginModal">
+			<ons-progress-circular indeterminate></ons-progress-circular>
+		</ons-modal>
 		<!-- Default : Side MenuBar -->
 		<ons-template id="mainPage.html">
 			<ons-splitter var="sideMenu">
@@ -89,7 +82,7 @@
 							<ons-list-item modifier="longdivider" ng-click="selectMenu('ChattingList.html')">
 								<ons-icon size="30px" icon="fa-comment"></ons-icon>
 							</ons-list-item>
-							<ons-list-item modifier="longdivider" ng-click="selectMenu('home')">
+							<ons-list-item modifier="longdivider" ng-click="selectMenu('home.html')">
 								<ons-icon size="30px" icon="fa-video-camera"></ons-icon>
 							</ons-list-item>
 						</ons-list>

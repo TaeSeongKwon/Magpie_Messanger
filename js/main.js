@@ -4,7 +4,8 @@ RESPONSE = "response";
 CONNECT = "connect";
 NOTIFY = "notification";
 CLOSE_POPUP = "close_popup";
-
+//
+STATE_LOGIN = "Login";
 // Define Category
 STATUS = "current_status";
 CAT_LOGIN = "popup_login";
@@ -14,6 +15,8 @@ REQUEST_FRIEND = "request_friend_list";
 ADD_FRIEND = "add_friend";
 ANSWER_REQUEST = "answer_request";
 NEW_CHATTING = "new_chatting";
+GO_CH_ROOM	= "go_to_chatting_room";
+SEND_MESSAGE = "send_message";
 
 var module = angular.module('magpie_front', ['onsen']);
 module.controller('AppController', function($scope){ 
@@ -21,6 +24,8 @@ module.controller('AppController', function($scope){
 	$scope.searchResult =  [];
 	$scope.reqFriendList =  [];
 	$scope.roomInfo = {};
+	// $scope.messageRoom = new Map();
+
 	port.onMessage.addListener(function(data){
 		if(data.type == CONNECT){
 			console.log("=== connect background ===");
@@ -31,7 +36,9 @@ module.controller('AppController', function($scope){
 		}else if(data.type == RESPONSE){
 			console.log("Response : ", data);
 			if(data.category == STATUS){
-
+				if(data.status != STATE_LOGIN){
+					setTimeout(function(){pageManager.pushPage("loginPage.html");}, 700);
+				}
 			}else if(data.category == CAT_JOIN){
 				joinModal.hide();
 				ons.notification.alert(data.msg, {title : "회원가입" , callback : () => {
@@ -39,14 +46,14 @@ module.controller('AppController', function($scope){
 						pageManager.popPage();
 					}
 				}});
-				
+		
 			}else if(data.category == CAT_LOGIN){
-				loginModal.hide();
+				if(loginModal != undefined) loginModal.hide();
 				if(data.isSuccess){
 					$scope.userProfile = data['userProfile'];
 					$scope.friendList = data['friendList'];
-					
-					pageManager.pushPage('mainPage.html');
+					$scope.chRoomList = data['chRoomList'];
+					setTimeout(function(){pageManager.pushPage('mainPage.html');}, 700);
 				}else{
 					ons.notification.alert("아이디 또는 비밀번호가 틀리셨습니다.", {title : "로그인 실패"});
 				}
@@ -80,6 +87,39 @@ module.controller('AppController', function($scope){
 					$scope.roomInfo = {};
 					$scope.roomInfo.title = data.roomName;
 					pageManager.replacePage("chattingRoom.html");
+				}
+			}else if(data.category == GO_CH_ROOM){
+				if(!data.isSuccess)
+					ons.notification.alert(data.msg, {title : "대화목록 불러오기 실패!"});
+				else {
+					var info = $scope.chRoomList[data.listIdx];
+					$scope.roomInfo = {};
+					$scope.roomInfo.title = info['room_name'];
+					$scope.roomInfo.hash = info['room_hash'];
+					$scope.roomInfo.roomNum = info['room_num'];
+					$scope.roomInfo.messages = data['messageList'];
+
+					pageManager.pushPage("chattingRoom.html");
+				}
+			}else if(data.category == SEND_MESSAGE){
+				if(!data.isSuccess){
+					ons.notification.alert(data.msg, {title : "메시지 전송 실패!"});
+				}else{
+					var info = data.messageInfo;
+					var tmp = {
+						'cm_num' 		:  			0,
+						'cm_text' 		: 			info.message,
+						'cm_date' 		: 			info.sendDate,
+						'mem_name'		: 			info.userName,
+						'mem_num' 		: 			info.userNum,
+						'room_num'		: 			info.roomNum,
+						'user_type' 	: 			1
+					};
+
+					$scope.roomInfo.messages.push(tmp);
+					// $scope.messageText = "";
+					$scope.$apply();
+
 				}
 			}
 			// onData(data);
@@ -213,5 +253,39 @@ module.controller('AppController', function($scope){
 		}else{
 			ons.notification.alert("대화상대를 선택하여 주세요.", {title : "대화상대 선택"});
 		}
+	}
+
+	$scope.goChattingRoom = function(roomNum,listIdx){
+		var reqData = {
+			'type' 		: REQUEST,
+			'category' 	: GO_CH_ROOM,
+			'roomNum' 	: roomNum,
+			'userNum' 	: $scope.userProfile['userNum'],
+			'listIdx'	: listIdx
+		};
+		port.postMessage(reqData);
+	}
+
+	$scope.roomKeyEvent = function($event, hash, roomNum, messageText){
+
+		if($event.key == "Enter"){
+			$scope.sendMessage(hash, roomNum, messageText);
+			this.messageText = "";
+		}
+	}
+	$scope.sendMessage = function(hash, roomNum, messageText){
+		var userNum = $scope.userProfile['userNum'];
+		var userName = $scope.userProfile['userName'];
+		
+		var reqData = {
+			'type' 			: 			REQUEST,
+			'category' 		: 			SEND_MESSAGE,
+			'roomHash' 		: 			hash,
+			'roomNum' 		: 			roomNum, 
+			'userNum' 		: 			userNum,
+			'userName' 		: 			userName,
+			'message' 		: 			messageText
+		};
+		port.postMessage(reqData);
 	}
 });

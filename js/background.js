@@ -16,6 +16,8 @@ var k;
 	ADD_FRIEND = "add_friend";
 	ANSWER_REQUEST = "answer_request";
 	NEW_CHATTING = "new_chatting";
+	GO_CH_ROOM	= "go_to_chatting_room";
+	SEND_MESSAGE = "send_message";
 
 	//ETC...
 	USER_ACCOUNT = "account_info";
@@ -45,6 +47,14 @@ var k;
 	REQUEST_NEWCHATTING = "request:new_chatting";
 	RESPONSE_NEWCHATTING = "response:new_chatting";
 
+	REQUEST_GO_CH_ROOM = "request:go_chatting_room";
+	RESPONSE_GO_CH_ROOM = "response:go_chatting_room";
+	
+	REQUEST_SEND_MESSAGE = "request:send_message";
+	RESPONSE_SEND_MESSAGE = "response:send_message";
+
+	NEW_MESSAGE = "push:new_message";
+
 	// Start Define User Informateion
 	var User = function(){
 		this.__constructor();
@@ -52,6 +62,7 @@ var k;
 	User.prototype.myStatus;
 	User.prototype.accountInfo;
 	User.prototype.isOpen;
+	User.prototype.infoData;
 	User.prototype.__constructor = function(){
 		User.prototype.myStatus = NOT_LOGIN;
 		User.prototype.accountInfo = null;
@@ -61,7 +72,7 @@ var k;
 
 	console.log("Start!");
 	// Connect to Server on Websocket
-	var socket = io.connect("http://localhost:9900");
+	var socket = io.connect("http://www.project-knock.tk:9900");
 	var user = new User();
 	var myPort;
 	// Connect to popup Page
@@ -72,9 +83,10 @@ var k;
 		chrome.storage.sync.get( USER_ACCOUNT, (data) => {
 			console.log("Check "+USER_ACCOUNT+" : ", data);
 			// Check User Account
-			if(data[USER_ACCOUNT]){ 
+			if(data[USER_ACCOUNT] != null){ 
+				console.log("Initialize User Info");
 				user.accountInfo = data[USER_ACCOUNT];	
-				socket.emit(REQUEST_LOGIN, user.accountInfo);
+				// socket.emit(REQUEST_LOGIN, user.accountInfo);
 			}
 			// define server and background communication
 			socket.on(RESPONSE_JOIN, (res) => {
@@ -98,9 +110,16 @@ var k;
 				if(res.isSuccess){
 					data['userProfile'] = res['userProfile'];
 					data['friendList'] = res['friendList'];
+					data['chRoomList'] = res['chRoomList'];
+					// user.InfoData {
+					// 	'userProfile' 		: 	res['userProfile'],
+					// 	'friendList' 		: 	res['friendList'],
+					// 	'chRoomList' 		: 	res['chRoomList']
+					// };
 					user.myStatus = LOGIN;
 				}else {
 					chrome.storage.sync.clear();
+					user.accountInfo = null;
 				}
 				myPort.postMessage(data);
 			});
@@ -161,6 +180,36 @@ var k;
 				}
 				myPort.postMessage(data);
 			});
+
+			socket.on(RESPONSE_GO_CH_ROOM, (res) => {
+				var data = {
+					type	: RESPONSE,
+					category : GO_CH_ROOM,
+					isSuccess : res.isSuccess,
+				};
+				if(!data.isSuccess) data.msg= res.msg;
+				else{
+					data.listIdx = res.listIdx;
+					data.messageList = res.messageList;
+				}
+				myPort.postMessage(data);
+			});
+
+			socket.on(RESPONSE_SEND_MESSAGE, (res) => {
+				var data = {
+					type 		 : 		RESPONSE,
+					category 	 : 		SEND_MESSAGE,
+					isSuccess 	 : 		res.isSuccess
+				};
+				if(!data.isSuccess) data.msg = res.msg;
+				else data.messageInfo = res.messageInfo;
+
+				myPort.postMessage(data);
+			});
+			socket.on(NEW_MESSAGE, (data) => {
+				console.log(data);
+			});
+
 			// Define PopupPage OnConnect Event
 			chrome.runtime.onConnect.addListener(function(port){
 				if(port.name == "magpie_app"){
@@ -199,13 +248,28 @@ var k;
 	}
 
 	function requestFunction(data, client){
+		var userEmail;
+		var userPwd;
 		if(data.category == STATUS){
-			var res = {
-				type : RESPONSE,
-				category : STATUS,
-				status : user.myStatus
+			if(user.myStatus == NOT_LOGIN){
+				if(user.accountInfo == null){
+					var res = {
+						type : RESPONSE,
+						category : STATUS,
+						status : user.myStatus
+					}
+					myPort.postMessage(res);
+				}else{
+					userEmail = user.accountInfo['userEmail'];
+					userPwd = user.accountInfo['userPwd'];
+					wRequestLogin(userEmail, userPwd, client);
+				}	
+			}else{
+				console.log("user Information : ", user.accountInfo);
+				userEmail = user.accountInfo['loginEmail'];
+				userPwd = user.accountInfo['loginPwd'];
+				wRequestLogin(userEmail, userPwd, client);
 			}
-			myPort.postMessage(res);
 		}else if(data.category == CAT_LOGIN)
 			wRequestLogin(data['loginEmail'], data['loginPwd'], client);
 		else if(data.category == CAT_JOIN)
@@ -221,6 +285,11 @@ var k;
 			wRequestAnswerRequest(data['fromNum'], data['toNum'], data['listIdx'],client);
 		}else if(data.category == NEW_CHATTING){
 			wRequestNewChatting(data.numList, client);
+		}else if(data.category == GO_CH_ROOM){
+			wRequestGoChattingRoom(data['roomNum'], data['userNum'], data['listIdx'], client);
+		}else if(data.category == SEND_MESSAGE) {
+			console.log("SEND MESSAGE");
+			wRequestSendMessage(data['roomHash'], data['roomNum'], data['userNum'], data['userName'], data['message'], client);
 		}
 	}
 
@@ -229,6 +298,10 @@ var k;
 			loginEmail : userID,
 			loginPwd : userPwd
 		};
+		chrome.storage.sync.set({ "account_info" : userAccount}, function(data){
+			console.log("data : ", data);
+		});
+		user.accountInfo = userAccount;
 		console.log("data : ",userAccount);
 		wSocket.emit(REQUEST_LOGIN, userAccount);
 	}
@@ -279,4 +352,24 @@ var k;
 	function wRequestNewChatting(numList, wSocket){
 		wSocket.emit(REQUEST_NEWCHATTING, {'numList' : numList});
 	}
+	function wRequestGoChattingRoom(roomNum, userNum, listIdx,wSocket){
+		var requestData = {
+			'roomNum'		: 		roomNum,
+			'userNum'		: 		userNum,
+			'listIdx'		: 		listIdx
+		};
+		wSocket.emit(REQUEST_GO_CH_ROOM, requestData);
+	}
+	function wRequestSendMessage(roomHash, roomNum, userNum, userName, message, wSocket){
+		var requestData = {
+			'roomHash' 			: 		roomHash,
+			'roomNum'			: 		roomNum,
+			'userNum' 			: 		userNum,
+			'userName'			: 		userName,
+			'message'			: 		message
+		};
+
+		wSocket.emit(REQUEST_SEND_MESSAGE, requestData);
+	}
+
 })();
