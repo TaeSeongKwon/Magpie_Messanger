@@ -84,8 +84,8 @@ var k;
 
 	console.log("Start!");
 	// Connect to Server on Websocket
-	// var socket = io.connect("http://www.project-knock.tk:9900");
-	var socket = io.connect("http://localhost:9900");
+	var socket = io.connect("http://www.project-knock.tk:9900");
+	// var socket = io.connect("http://localhost:9900");
 	var user = new User();
 	var myPort;
 	// Connect to popup Page

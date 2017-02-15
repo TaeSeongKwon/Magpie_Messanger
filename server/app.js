@@ -8,7 +8,8 @@ var crypto			= require("crypto");
 var config = {
 	host	 		: "localhost",
 	user	 		: "root",
-	password		: "root",
+	password		: "gksksla183",
+	// password		: "root",
 	database		: "MAGPIE_DB"
 };
 var port = 9900;
@@ -415,12 +416,15 @@ io.on("connection", (socket) => {
 				var list = {};
 				for(var key in io.sockets.connected){
 					var cursor = io.sockets.connected[key];
+					console.log("user id : ", cursor.myID);
 					list[cursor.myID] = cursor;
 				}
 				var enableList = [];
+				console.log("================");
 				for(var idx in result){
 					var tmp = result[idx];
 					var friend = list["user_"+tmp['memberNum']];
+					console.log("userID : ","user_"+tmp['memberNum']);
 					if(friend.userEnable){
 						enableList.push(tmp);
 					}
