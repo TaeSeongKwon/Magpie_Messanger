@@ -21,9 +21,10 @@ RECEIVE_MESSAGE = "receive_message";
 NEW_ROOM = "new_room";
 
 
-var module = angular.module('magpie_front', ['onsen']);
+var module = angular.module('magpie_front', ['onsen', 'callList']);
 module.controller('AppController', function($scope, $timeout){ 
 	var port = chrome.runtime.connect({name : "magpie_app"});
+	$scope.myPort = port;
 	$scope.searchResult =  [];
 	$scope.reqFriendList =  [];
 	$scope.roomInfo = {};
@@ -95,6 +96,8 @@ module.controller('AppController', function($scope, $timeout){
 				$scope.searchResult =  [];
 				if(data.isSuccess)
 					$scope.searchResult = data.resultList;
+				$scope.$apply();
+
 			}else if(data.category == REQUEST_FRIEND){
 				$scope.reqFriendList =  [];
 				if(data.isSuccess){
@@ -106,6 +109,7 @@ module.controller('AppController', function($scope, $timeout){
 					ons.notification.alert(data.msg, {title : "친구추가 실패!"});
 				else {
 					$scope.searchResult.splice(data.listIdx, 1);
+					$scope.$apply();
 				}
 				
 			}else if(data.category == ANSWER_REQUEST){
@@ -113,6 +117,7 @@ module.controller('AppController', function($scope, $timeout){
 					ons.notification.alert(data.msg, {title : "요청응답 실패!"});
 				else {
 					$scope.reqFriendList.splice(data.listIdx, 1);
+					$scope.$apply();
 				}
 			}else if(data.category == NEW_CHATTING){
 				if(!data.isSuccess)
@@ -181,7 +186,18 @@ module.controller('AppController', function($scope, $timeout){
 	});
 
 	$scope.selectMenu = function(menuName){
+		var prePage = sideMenu.content.page;
+		if(prePage == "callList.html"){
+			console.log("dest");
+			$scope.$broadcast("destroy:callList", {});
+		}
 		sideMenu.content.load(menuName);
+		
+		// console.log(sideMenu.content);
+		// sideMenu.content.on("destroy", function(){
+		// 	console.log(this);
+		// 	console.log("destroy");
+		// });
 	}
 	$scope.newAccount = function(newName, newEmail, newPwd1, newPwd2){
 		var data = {
@@ -342,5 +358,6 @@ module.controller('AppController', function($scope, $timeout){
 		};
 		port.postMessage(reqData);
 	}
+
 
 });

@@ -1,0 +1,15 @@
+<ons-page ng-controller="CallListController">
+	<ons-toolbar>
+		<div class='center'>{{callListTitle}}</div>
+	</ons-toolbar>
+	<ons-list>
+		<ons-list-item ng-repeat="(idx, value) in userList">
+			<div class='left'>
+				<img class='list__item__thumbnail' src="image/users/a.jpg">
+			</div>
+			<div class='right'>
+				<span class='list__item__subtitle'>{{value}}</span>
+			</div>
+		</ons-list-item>
+	</ons-list>
+</ons-page>

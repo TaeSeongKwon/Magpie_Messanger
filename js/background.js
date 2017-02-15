@@ -21,6 +21,7 @@ var k;
 	SEND_MESSAGE = "send_message";
 	RECEIVE_MESSAGE = "receive_message";
 	NEW_ROOM = "new_room";
+	GET_ENABLE_CALL_USER = "enable_call_user";
 
 	//ETC...
 	USER_ACCOUNT = "account_info";
@@ -60,6 +61,12 @@ var k;
 	NEW_CHATTING_ROOM = "push:new_chatting_room";
 	REQUEST_JOIN_ROOM = "request:join_hash_room";
 
+	REQUEST_ENABLE_CALL_LIST = "request:enable_call_list";
+	RESPONSE_ENABLE_CALL_LIST = "response:enable_call_list";
+
+	DISCONNECT = "disconnect";
+
+
 	// Start Define User Informateion
 	var User = function(){
 		this.__constructor();
@@ -77,7 +84,8 @@ var k;
 
 	console.log("Start!");
 	// Connect to Server on Websocket
-	var socket = io.connect("http://www.project-knock.tk:9900");
+	// var socket = io.connect("http://www.project-knock.tk:9900");
+	var socket = io.connect("http://localhost:9900");
 	var user = new User();
 	var myPort;
 	// Connect to popup Page
@@ -93,6 +101,17 @@ var k;
 				user.accountInfo = data[USER_ACCOUNT];	
 				// socket.emit(REQUEST_LOGIN, user.accountInfo);
 			}
+
+			// Define PopupPage OnConnect Event
+			var onConnectEvent = function(port){
+				if(port.name == "magpie_app"){
+					myPort = port;
+				 	init(socket, port, this);
+				}
+
+			};
+			chrome.runtime.onConnect.addListener(onConnectEvent);
+
 			// define server and background communication
 			socket.on(RESPONSE_JOIN, (res) => {
 				var data = {
@@ -230,19 +249,29 @@ var k;
 				socket.emit(REQUEST_JOIN_ROOM, {'roomHash' : pushData['room_hash']});
 				myPort.postMessage(pushData);
 			});
-			// Define PopupPage OnConnect Event
-			chrome.runtime.onConnect.addListener(function(port){
-				if(port.name == "magpie_app"){
-					myPort = port;
-				 	init(socket, port);
+			socket.on(RESPONSE_ENABLE_CALL_LIST, (res) => {
+				var data = {
+					type 		: 		RESPONSE,
+					category 	: 		GET_ENABLE_CALL_USER,
+					isSuccess 	: 		res.isSuccess
 				}
+				if(res.isSuccess) data['enableList'] = res.enableList;
+				else 			  data['msg'] 		 = res.msg;
+
+				myPort.postMessage(data);
 			});
+			socket.on(DISCONNECT, () => {
+				console.log("webSocket disconnect");
+				chrome.runtime.onConnect.removeListener(onConnectEvent);
+			});
+			
+
 			// chrome.runtime
 		});	
 	});
 
 	// Initialize Communication Between Background and Popup Page
-	function init(client, port){ 
+	function init(client, port, connectEvent){ 
 		/*
 			port : communication to background and popup
 			client : communication to Server
@@ -262,6 +291,7 @@ var k;
 		});
 		myPort.onDisconnect.addListener(() => {
 			console.log("close");
+			
 			user.isOpen = false;
 		//	eventDelete()
 		});
@@ -310,6 +340,9 @@ var k;
 		}else if(data.category == SEND_MESSAGE) {
 			console.log("SEND MESSAGE");
 			wRequestSendMessage(data['roomHash'], data['roomNum'], data['userNum'], data['userName'], data['message'], client);
+		}else if(data.category == GET_ENABLE_CALL_USER){
+			console.log(GET_ENABLE_CALL_USER);
+			wRequestGetEnableCallList(data['userNum'], client);
 		}
 	}
 
@@ -392,4 +425,11 @@ var k;
 		wSocket.emit(REQUEST_SEND_MESSAGE, requestData);
 	}
 
+	function wRequestGetEnableCallList(userNum, wSocket){
+		console.log("user Num : ", userNum);
+		var requestData = {
+			'userNum' 			: 			userNum
+		};
+		wSocket.emit(REQUEST_ENABLE_CALL_LIST, requestData);
+	}
 })();

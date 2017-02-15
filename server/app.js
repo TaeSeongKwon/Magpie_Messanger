@@ -46,13 +46,23 @@ NEW_MESSAGE = "push:new_message";
 NEW_CHATTING_ROOM = "push:new_chatting_room";
 REQUEST_JOIN_ROOM = "request:join_hash_room";
 
+REQUEST_ENABLE_CALL_LIST = "request:enable_call_list";
+RESPONSE_ENABLE_CALL_LIST = "response:enable_call_list";
+
 //io.use(socketAsPromised());
 io.listen(port);
 
 console.log("============ START MAGPIE_MESSAGER SERVER ============");
 console.log("PORT : ", port);
 io.on("connection", (socket) => {
+	socket.myID = null;
+	socket.userEnable = false;
+
 	console.log("request Connect Client!!")	;
+	// for(var i in io.sockets.connected){
+	// 	var client = io.sockets.connected[i];
+	// 	console.log(client.myID);
+	// }
 	socket.on(REQUEST_LOGIN, (data) => {
 		var user_id = data['loginEmail'];
 		var user_pwd = data['loginPwd'];
@@ -386,6 +396,45 @@ io.on("connection", (socket) => {
 	socket.on(REQUEST_JOIN_ROOM, (req) => {
 		console.log("join room hash : ", req.roomHash);
 		socket.join(req.roomHash);
+	});
+
+	socket.on(REQUEST_ENABLE_CALL_LIST, (req) => {
+		var userNum = req['userNum'];
+		var connection;
+		var resData = {
+			isSuccess 		: 		true
+		}
+		mysql.createConnection(config).then(
+			(conn) => {
+				connection = conn;
+				var selectQuery = "SELECT * FROM friend_list_view WHERE memberNum = ? ";
+				return connection.query(selectQuery, [userNum]);
+			}
+		).then(
+			(result) => {
+				var list = {};
+				for(var key in io.sockets.connected){
+					var cursor = io.sockets.connected[key];
+					list[cursor.myID] = cursor;
+				}
+				var enableList = [];
+				for(var idx in result){
+					var tmp = result[idx];
+					var friend = list["user_"+tmp['memberNum']];
+					if(friend.userEnable){
+						enableList.push(tmp);
+					}
+				}
+				resData['enableList'] = enableList;
+				socket.emit(RESPONSE_ENABLE_CALL_LIST, resData);
+			},
+			(error) => {
+				resData.isSuccess = false;
+				resData.msg = "이용가능한 사용자의 목록을 조회하는데 실패했습니다";
+				socket.emit(RESPONSE_ENABLE_CALL_LIST, resData);
+				connection.end();
+			}
+		);
 	});
 
 	function setRoomName(roomId, roomHash, numList, wSocket, resData){
