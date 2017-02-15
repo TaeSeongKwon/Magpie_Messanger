@@ -3,12 +3,12 @@
 		<div class='center'>{{callListTitle}}</div>
 	</ons-toolbar>
 	<ons-list>
-		<ons-list-item ng-repeat="(idx, value) in userList">
+		<ons-list-item ng-repeat="(idx, value) in enableList" ng-click="callToFriend(idx)">
 			<div class='left'>
 				<img class='list__item__thumbnail' src="image/users/a.jpg">
 			</div>
 			<div class='right'>
-				<span class='list__item__subtitle'>{{value}}</span>
+				<span class='list__item__subtitle'>{{value.friendName}}</span>
 			</div>
 		</ons-list-item>
 	</ons-list>

@@ -423,8 +423,8 @@ io.on("connection", (socket) => {
 				console.log("================");
 				for(var idx in result){
 					var tmp = result[idx];
-					var friend = list["user_"+tmp['memberNum']];
-					console.log("userID : ","user_"+tmp['memberNum']);
+					var friend = list["user_"+tmp['friendNum']];
+					console.log("userID : ","user_"+tmp['friendNum']);
 					if(friend.userEnable){
 						enableList.push(tmp);
 					}

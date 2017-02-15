@@ -30,6 +30,20 @@ module.controller("CallListController", ["$scope", function($scope){
 	console.log("get_user_list");
 	port.postMessage(first);
 
+
+	$scope.callToFriend = function(idx){
+		var friend = $scope.enableList[idx];
+		ons.notification.confirm(friend.friendName+"님에게 대화를 신청하시겠습니까?", {
+			title  : "대화신청",
+			buttonLabels : ["아니오", "예"]
+		}).then(
+			(value) => {
+				if(value){
+					console.log("예");
+				}
+			}
+		);
+	}
 	// Destroy Controller
 	$scope.$on("destroy:callList", function(){
 		console.log("end CallListController");
