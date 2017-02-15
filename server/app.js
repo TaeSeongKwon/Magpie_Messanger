@@ -425,7 +425,8 @@ io.on("connection", (socket) => {
 					var tmp = result[idx];
 					var friend = list["user_"+tmp['friendNum']];
 					console.log("userID : ","user_"+tmp['friendNum']);
-					if(friend.userEnable){
+					console.log("friend : ", friend);
+					if(friend != null && friend.userEnable){
 						enableList.push(tmp);
 					}
 				}
