@@ -291,7 +291,6 @@ var k;
 		});
 		myPort.onDisconnect.addListener(() => {
 			console.log("close");
-			
 			user.isOpen = false;
 		//	eventDelete()
 		});

@@ -575,7 +575,7 @@ io.on("connection", (socket) => {
 					console.log("ROOM HASH("+(idx+1)+") : ", list[idx]['room_hash']);
 				 	socket.join(list[idx]['room_hash']);
 				}
-				
+				socket.userEnable = true;
 				res['friendList'] = result[1];
 				socket.emit(RESPONSE_LOGIN, res);	
 				connection.end();
