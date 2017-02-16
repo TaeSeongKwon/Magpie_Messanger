@@ -59,7 +59,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 	}
 	$scope.startCall = function(){
 		$scope.connection = new RTCPeerConnection($scope.pc_config);
-		console.log(connection);
+		console.log($scope.connection);
 
 		if($scope.callData != null)
 			$scope.myType = OFFER;
