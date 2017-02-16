@@ -66,7 +66,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 		else 
 			$scope.myType = ANSWER;
 
-		$scope.initWebRTC($scope);
+		$scope.initWebRTC($scope.connection);
 	}
 	$scope.initWebRTC = function(connection){
 		connection.onicecandidate = function(evt){
