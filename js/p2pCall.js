@@ -1,5 +1,6 @@
 var p2pCall = angular.module("p2pCall", []);
 p2pCall.controller("CallController", ["$scope", function($scope) {
+	console.log("$scope : ", $scope);
 	$scope.port = $scope.$parent.shareData['myPort'];
 	$scope.callData = $scope.$parent.shareData['callData'];
 	$scope.connection;
