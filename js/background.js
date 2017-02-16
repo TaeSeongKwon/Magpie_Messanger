@@ -287,6 +287,7 @@ var k;
 			});
 			// 대화 신청이 들어온 이벤트
 			socket.on(NOTIFY_CALL, (pushData) => {
+				console.log("NOTIFY CALL!");
 				var data = {
 					'type' 		: 		NOTIFY,
 					'category' 	: 		APPLY_CALL,
