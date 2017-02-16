@@ -293,7 +293,7 @@ var k;
 					'category' 	: 		APPLY_CALL,
 					'pushData' 	: 		pushData
 				};
-				myPort.postMessage(pushData);
+				myPort.postMessage(data);
 			});
 
 			socket.on(DISCONNECT, () => {
