@@ -34,6 +34,7 @@
 	CALLER = "send_request_call";
 	// p2p call controller type
 	CREATE_CALL_ROOM = "create_call_room";
+	WEB_RTC_CALL = "webRTC_Call";
 
 	//ETC...
 	USER_ACCOUNT = "account_info";
