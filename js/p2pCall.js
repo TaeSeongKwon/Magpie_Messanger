@@ -1,7 +1,7 @@
 var p2pCall = angular.module("p2pCall", []);
 p2pCall.controller("CallController", ["$scope", function($scope) {
-	// $scope.port = $scope.$parent.shareData['myPort'];
-	// $scope.callData = $scope.$parent.shareData['callData'];
+	$scope.port = $scope.$parent.shareData['myPort'];
+	$scope.callData = $scope.$parent.shareData['callData'];
 	$scope.connection;
 	var WEB_RTC_CALL = "webRTC_Call";
 	var CREATE_CALL_ROOM = "create_call_room";
