@@ -30,10 +30,13 @@ module.controller("CallListController", ["$scope", function($scope){
 				applyCall.hide();
 				if(resData.type == ACCEPT){
 					// 응답함 
-					$scope.$parent.shareData = {
+					$scope.$root.shareData = {
 						'myPort' 		: 		port,
 						'callData'		: 		callee
 					};
+					// console.log("shareData : ", $scope.$parent.shareData);
+					// console.log("$parent : ", $scope.$parent);
+
 					pageManager.pushPage("p2pCall.html");
 
 				}else{

@@ -82,14 +82,21 @@ module.controller('AppController', function($scope, $timeout){
 							'category' 	  : 	ANSWER_CALL,
 							'callData' 	  : 	callData
 						};
-						if(value)
+						if(value){
 							// 승낙할 경우
 							answerData.answer = true;
-						else
+							$scope.$root.shareData = {
+								'myPort' 		: 		port,
+								'callData'		: 		null
+							};
+							pageManager.pushPage("p2pCall.html");
+							port.postMessage(answerData);
+						}else{
 							// 거절할 경우
 							answerData.answer = false;
-
-						port.postMessage(answerData);
+							port.postMessage(answerData);
+						}
+						
 					}
 				)
 			}
