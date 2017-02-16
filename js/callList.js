@@ -25,7 +25,7 @@ module.controller("CallListController", ["$scope", function($scope){
 				}
 			}else if(data.category == CALLER){
 				var resData = data.resData;
-				var callee == resData.callData;
+				var callee = resData.callData;
 				if(resData.type == ACCEPT){
 					// 응답함 
 					// pageManager.pushPage()
@@ -85,7 +85,7 @@ module.controller("CallListController", ["$scope", function($scope){
 	$scope.testDest = function() {
 		console.log("Destroy!!!!");
 	}
-	
+
 	$scope.testClick = function(){
 		pageManager.pushPage("p2pCall.html");
 	}
