@@ -12,7 +12,7 @@ var config = {
 	// password		: "root",
 	database		: "MAGPIE_DB"
 };
-var port = 9900;
+var port = 9909;
 UNIT_LIST = 50;
 
 //user answer type

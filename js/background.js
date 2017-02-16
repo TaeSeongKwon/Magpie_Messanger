@@ -108,7 +108,7 @@
 
 	console.log("Start!");
 	// Connect to Server on Websocket
-	var socket = io.connect("http://www.project-knock.tk:9900");
+	var socket = io.connect("http://www.project-knock.tk:9909");
 	// var socket = io.connect("http://localhost:9900");
 	var user = new User();
 	var myPort;
@@ -319,7 +319,7 @@
 			socket.on(NOTIFY_CREATE_CALL_ROOM, () => {
 				myPort.postMessage({ 'type' : CREATE_CALL_ROOM});
 			});
-			
+
 			socket.on(NOTIFY_WEB_RTC_CALL, (pushData) => {
 				myPort.postMessage(pushData);
 			});
