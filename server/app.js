@@ -454,8 +454,13 @@ io.on("connection", (socket) => {
 
 	socket.on(REQUEST_CALL_DATA, (req) => {
 		var toNum = req['toNum'];
-		var callee = io.sockets.connected['user_'+toNum];
-		console.log("is True : ", callee.userEnable)
+		var list = {};
+		for(var key in io.sockets.connected){
+			var cursor = io.sockets.connected[key];
+			list[cursor.myID] = cursor;
+		}
+		var callee = list['user_'+toNum];
+		console.log("is True : ", callee.userEnable);
 		if(callee != null && callee.userEnable){
 			callee.emit(NOTIFY_CALL, req);
 		}else{
