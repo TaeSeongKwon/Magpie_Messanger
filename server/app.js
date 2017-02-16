@@ -523,7 +523,7 @@ io.on("connection", (socket) => {
 		friend.callRoom = hashName;
 		socket.join(socket.callRoom);
 		friend.join(friend.callRoom);
-		console.log(sokcet.myID+" | "+friend.myID);
+		console.log(socket.myID+" | "+friend.myID);
 		socket.emit(NOTIFY_CREATE_CALL_ROOM, {});
 		friend.emit(NOTIFY_CREATE_CALL_ROOM, {});
 		console.log("created call room !");
