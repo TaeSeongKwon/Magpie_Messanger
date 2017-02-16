@@ -495,7 +495,7 @@ io.on("connection", (socket) => {
 				res.type = REFUSE;
 			}
 
-			socket.emit(RESPONSE_CALL_DATA, res);	
+			caller.emit(RESPONSE_CALL_DATA, res);	
 		}
 	});
 
