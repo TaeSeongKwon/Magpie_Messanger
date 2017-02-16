@@ -504,6 +504,7 @@ io.on("connection", (socket) => {
 		}
 	});
 	socket.on(REQUEST_CREATE_CALL_ROOM, (req) => {
+		console.log("create call room ");
 		var callData = req.callData;
 
 		var roomName = callData['fromEmail'] + "&" + callData['toEmail']+ "_"+ new Date().toString();
@@ -522,9 +523,10 @@ io.on("connection", (socket) => {
 		friend.callRoom = hashName;
 		socket.join(socket.callRoom);
 		friend.join(friend.callRoom);
-
+		console.log(sokcet.myID+" | "+friend.myID);
 		socket.emit(NOTIFY_CREATE_CALL_ROOM, {});
 		friend.emit(NOTIFY_CREATE_CALL_ROOM, {});
+		console.log("created call room !");
 
 	});
 

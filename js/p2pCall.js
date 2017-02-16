@@ -47,6 +47,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 				"type" 		: 			CREATE_CALL_ROOM,
 				"callData"  : 			$scope.callData
 			};
+			console.log("Answer Mode");
 			$scope.port.postMessage(reqData);
 		}
 		

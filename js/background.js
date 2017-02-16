@@ -317,10 +317,12 @@
 			});
 
 			socket.on(NOTIFY_CREATE_CALL_ROOM, () => {
+				console.log(NOTIFY_CREATE_CALL_ROOM);
 				myPort.postMessage({ 'type' : CREATE_CALL_ROOM});
 			});
 
 			socket.on(NOTIFY_WEB_RTC_CALL, (pushData) => {
+				console.log(NOTIFY_WEB_RTC_CALL);
 				myPort.postMessage(pushData);
 			});
 
@@ -352,6 +354,7 @@
 				// console.log("close window");
 				user.isOpen = false;
 			}else if(data.type ==CREATE_CALL_ROOM){
+				console.log("create call room ", data.callData);
 				var reqData = {
 					"callData" 	:data.callData
 				};
