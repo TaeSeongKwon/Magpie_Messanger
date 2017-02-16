@@ -278,6 +278,7 @@ var k;
 			});
 			// 대화신청에 응답을 받는 이벤트
 			socket.on(RESPONSE_CALL_DATA, (res) => {
+				console.log("RESPONSE_CALL_DATA");
 				var data = {
 					'type' 		: 		RESPONSE,
 					'category'  : 		CALLER,
@@ -385,6 +386,7 @@ var k;
 			wRequestSendRequestCall(data['callData'],client);
 		}else if(data.category == ANSWER_CALL){
 			//상대방이 응답을 한 데이터
+			console.log("ANSWER_CALL");
 			wRequestSendAnswerCall(data['callData'], data['answer'],client);
 		}
 	}

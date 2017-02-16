@@ -24,6 +24,7 @@ module.controller("CallListController", ["$scope", function($scope){
 					ons.notification.alert(data['msg'], "목록 가져오기 실패!");
 				}
 			}else if(data.category == CALLER){
+				console.log("RESPONSE CALLER");
 				var resData = data.resData;
 				var callee = resData.callData;
 				if(resData.type == ACCEPT){
