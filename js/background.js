@@ -480,6 +480,7 @@ var k;
 		wSocket.emit(REQUEST_CALL_DATA, callData);
 	}
 	function wRequestSendAnswerCall(calleeData, answer, wSocket){
+		console.log("sendAnswerCall");
 		var data = {
 			'answer' 	: 	answer,
 			'calleeData': 	calleeData
