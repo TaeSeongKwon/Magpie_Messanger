@@ -40,6 +40,7 @@ module.controller('AppController', function($scope, $timeout){
 			// 	port.postMessage({type : CLOSE_POPUP});
 			// }
 		}else if(data.type== NOTIFY){
+			console.log("NOTIFY : ", data);
 			if(data.category == RECEIVE_MESSAGE){
 				var info = data.messageInfo;
 				var tmp = {
@@ -87,7 +88,7 @@ module.controller('AppController', function($scope, $timeout){
 						else
 							// 거절할 경우
 							answerData.answer = false;
-							
+
 						port.postMessage(answerData);
 					}
 				)
