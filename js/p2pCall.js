@@ -25,6 +25,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 	};	
 	function p2pPortEvent(data){
 		if(data.type == CREATE_CALL_ROOM){
+			console.log("create call room start call!");
 			$scope.startCall();
 		}else{
 			if(data.head == "candidate"){
@@ -39,7 +40,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 
 	$scope.p2pInit = function(){
 		console.log("p2p Call_Initialize");
-		// $scope.port.onMessage.addListener(p2pPortEvent);
+		$scope.port.onMessage.addListener(p2pPortEvent);
 		
 		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
 		if($scope.callData != null){
