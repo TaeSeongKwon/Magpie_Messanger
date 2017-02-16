@@ -132,7 +132,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 					return $scope.connection.createAnswer();
 				}
 			).then(
-				(answerSDP) ={
+				(answerSDP) => {
 					console.log("create Answer SDP");
 					return $scope.connection.setLocalDescription(answerSDP);
 				}
