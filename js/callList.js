@@ -27,9 +27,15 @@ module.controller("CallListController", ["$scope", function($scope){
 				console.log("RESPONSE CALLER");
 				var resData = data.resData;
 				var callee = resData.callData;
+				applyCall.hide();
 				if(resData.type == ACCEPT){
 					// 응답함 
-					// pageManager.pushPage()
+					$scope.shareData = {
+						'myPort' 		: 		port,
+						'callData'		: 		callee
+					};
+					pageManager.pushPage("p2pCall.html");
+
 				}else{
 					var status;
 					if(resData.type == DISABLE)
@@ -44,16 +50,7 @@ module.controller("CallListController", ["$scope", function($scope){
 			}
 		}
 	}
-	port.onMessage.addListener(onMessageEvent);
-	var first = {
-		'type' 		: 		REQUEST,
-		'category' 	: 		GET_ENABLE_CALL_USER,
-		'userNum' 	: 		$scope.$parent.userProfile['userNum']
-	};
-	console.log("get_user_list");
-	port.postMessage(first);
-
-
+	
 	$scope.callToFriend = function(idx){
 		var friend = $scope.enableList[idx];
 		ons.notification.confirm(friend.friendName+"님에게 대화를 신청하시겠습니까?", {
@@ -78,22 +75,33 @@ module.controller("CallListController", ["$scope", function($scope){
 					};
 					port.postMessage(reqData);
 					console.log("예");
+					applyCall.show();
 				}
 			}
 		);
 	}
 
-	$scope.testDest = function() {
-		console.log("Destroy!!!!");
+	$scope.listHide = function() {
+		console.log("end CallListController");
+		port.onMessage.removeListener(onMessageEvent);
 	}
 
+	$scope.listShow = function () {
+		port.onMessage.addListener(onMessageEvent);
+		var first = {
+			'type' 		: 		REQUEST,
+			'category' 	: 		GET_ENABLE_CALL_USER,
+			'userNum' 	: 		$scope.$parent.userProfile['userNum']
+		};
+		console.log("CALL_LIST");
+		port.postMessage(first);
+	}
 	$scope.testClick = function(){
 		pageManager.pushPage("p2pCall.html");
 	}
 
 	// Destroy Controller
 	$scope.$on("destroy:callList", function(){
-		console.log("end CallListController");
-		port.onMessage.removeListener(onMessageEvent);
+		$scope.listHide();
 	});
 }]);

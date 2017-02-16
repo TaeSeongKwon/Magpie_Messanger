@@ -1,6 +1,29 @@
-<ons-page>
+<ons-page ng-controller="CallController" ons-show="p2pInit()" ons-hide="p2pDestroy()">
+	<style>
+		html{
+			width : 850px !important;
+		}
+		#otherDisplay {
+			position: absolute;
+			background: rgba(0,0,0,0.8);
+		    width: 100%;
+		    height: 558px;
+		}
+		#meDisplay{
+			position: absolute;
+			bottom :10px;
+			right : 10px;
+			width: 200px;
+			height : 200px;
+			/*background-color: rgba(0,0,128, 0.7);*/
+		}
+	</style>
 	<ons-toolbar>
 		<div class="left"><ons-back-button></ons-back-button></div>
 		<div class="center">된다!</div>
 	</ons-toolbar>
+	<section>
+		<video id="otherDisplay" autoplay> </video>
+		<video id="meDisplay" autoplay></video>
+	</section>
 </ons-page>

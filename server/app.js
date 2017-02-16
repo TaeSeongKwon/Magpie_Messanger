@@ -61,6 +61,11 @@ RESPONSE_CALL_DATA = "response:call_data";
 NOTIFY_CALL = "push:request_call";
 PUSH_ANSWER_CALL = "push:answer_call";;
 
+REQUEST_CREATE_CALL_ROOM = "request:create_call_room";
+NOTIFY_CREATE_CALL_ROOM = "push:create_call_room";
+
+REQUEST_WEB_RTC_CALL = "request:web_rtc_call";
+NOTIFY_WEB_RTC_CALL = "push:web_rtc_call";
 //io.use(socketAsPromised());
 io.listen(port);
 
@@ -498,7 +503,34 @@ io.on("connection", (socket) => {
 			caller.emit(RESPONSE_CALL_DATA, res);	
 		}
 	});
+	socket.on(REQUEST_CREATE_CALL_ROOM, (req) => {
+		var callData = req.callData;
 
+		var roomName = callData['fromEmail'] + "&" + callData['toEmail']+ "_"+ new Date().toString();
+		var encoder = crypto.createHash('sha1');
+		encoder.update(roomName);
+		var hashName = encoder.digest("hex");
+
+		var list = {};
+		for(var key in io.sockets.connected){
+			var cursor = io.sockets.connected[key];
+			list[cursor.myID] = cursor;
+		}
+		var friend = list["user_"+callData['toNum']];
+
+		socket.callRoom = hashName;
+		friend.callRoom = hashName;
+		socket.join(socket.callRoom);
+		friend.join(friend.callRoom);
+
+		socket.emit(NOTIFY_CREATE_CALL_ROOM, {});
+		friend.emit(NOTIFY_CREATE_CALL_ROOM, {});
+
+	});
+
+	socket.on(REQUEST_WEB_RTC_CALL, (req) => {
+		socket.broadcast.to(socket.callRoom).emit(NOTIFY_WEB_RTC_CALL, req);
+	});
 	function setRoomName(roomId, roomHash, numList, wSocket, resData){
 		var connection;
 		mysql.createConnection(config).then(

@@ -1,7 +1,10 @@
-<ons-page ng-controller="CallListController" ons-destroy="testDest()">
+<ons-page ng-controller="CallListController" ons-show="listShow()" ons-hide="listHide()">
 	<ons-toolbar>
 		<div class='center'>{{callListTitle}}</div>
 	</ons-toolbar>
+	<ons-modal var="applyCall">
+			<ons-progress-circular indeterminate></ons-progress-circular>
+	</ons-modal>
 	<ons-list>
 		<ons-list-item ng-click="testClick()">
 

@@ -22,7 +22,7 @@ NEW_ROOM = "new_room";
 APPLY_CALL = "apply_call";
 ANSWER_CALL = "answer_call";
 
-var module = angular.module('magpie_front', ['onsen', 'callList']);
+var module = angular.module('magpie_front', ['onsen', 'callList', "p2pCall"]);
 module.controller('AppController', function($scope, $timeout){ 
 	var port = chrome.runtime.connect({name : "magpie_app"});
 	$scope.myPort = port;

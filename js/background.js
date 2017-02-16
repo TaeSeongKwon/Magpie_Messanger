@@ -1,5 +1,5 @@
 // Define Method and Call for Information Hidding
-var k;
+
 (function(){
 	// Define TYPE
 	REQUEST = "request";
@@ -32,6 +32,8 @@ var k;
 	// call List controller category
 	GET_ENABLE_CALL_USER = "enable_call_user";
 	CALLER = "send_request_call";
+	// p2p call controller type
+	CREATE_CALL_ROOM = "create_call_room";
 
 	//ETC...
 	USER_ACCOUNT = "account_info";
@@ -80,6 +82,12 @@ var k;
 	NOTIFY_CALL = "push:request_call";
 	PUSH_ANSWER_CALL = "push:answer_call";
 
+	REQUEST_CREATE_CALL_ROOM = "request:create_call_room";
+	NOTIFY_CREATE_CALL_ROOM = "push:create_call_room";
+
+	REQUEST_WEB_RTC_CALL = "request:web_rtc_call";
+	NOTIFY_WEB_RTC_CALL = "push:web_rtc_call";
+
 	DISCONNECT = "disconnect";
 
 
@@ -107,6 +115,17 @@ var k;
 	// Connect to popup Page
 	
 	socket.on(CONNECT, function(data){
+		navigator.getUserMedia({video : true, audio : true}, function(stream){
+			console.log(stream);
+
+			for(var idx in stream.getTracks()) {
+				stream.getTracks()[idx].stop();
+			}
+			// var track = [0];
+			// track.stop();
+		}, function(){
+			window.open("permission.html", "", "width=500, height=500");
+		});
 		console.log("Connect to Websocket");
 		// chrome.storage.sync.set({ "account_info" : {id : "kts", pwd : "1234"}}, function(data){});
 		chrome.storage.sync.get( USER_ACCOUNT, (data) => {
@@ -297,6 +316,14 @@ var k;
 				myPort.postMessage(data);
 			});
 
+			socket.on(NOTIFY_CREATE_CALL_ROOM, () => {
+				myPort.postMessage({ 'type' : CREATE_CALL_ROOM});
+			});
+			
+			socket.on(NOTIFY_WEB_RTC_CALL, (pushData) => {
+				myPort.postMessage(pushData);
+			});
+
 			socket.on(DISCONNECT, () => {
 				console.log("webSocket disconnect");
 				chrome.runtime.onConnect.removeListener(onConnectEvent);
@@ -324,6 +351,13 @@ var k;
 			}else if(data.type == CLOSE_POPUP){
 				// console.log("close window");
 				user.isOpen = false;
+			}else if(data.type ==CREATE_CALL_ROOM){
+				var reqData = {
+					"callData" 	:data.callData
+				};
+				client.emit(REQUEST_CREATE_CALL_ROOM, reqData);
+			}else if(data.type ==WEB_RTC_CALL){
+				client.emit(REQUEST_WEB_RTC_CALL, data);
 			}
 		});
 		myPort.onDisconnect.addListener(() => {
