@@ -475,7 +475,12 @@ io.on("connection", (socket) => {
 
 	socket.on(PUSH_ANSWER_CALL, (req) => {
 		var fromNum = req['fromNum'];
-		var caller = io.sockets.connected['user_'+fromNum];
+		var list = {};
+		for(var key in io.sockets.connected){
+			var cursor = io.sockets.connected[key];
+			list[cursor.myID] = cursor;
+		}
+		var caller = list['user_'+fromNum];
 		if(caller != null){
 			
 			var res = {
