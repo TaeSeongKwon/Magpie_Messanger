@@ -7,7 +7,12 @@ var k;
 	CONNECT = "connect";
 	NOTIFY = "notification";
 	CLOSE_POPUP = "close_popup";
-	
+
+	//user answer type
+	DISABLE = "disable";
+	REFUSE = "refuse";
+	ACCEPT = "accept";
+
 	// Define Category
 	STATUS = "current_status";
 	CAT_LOGIN = "popup_login";
@@ -21,7 +26,12 @@ var k;
 	SEND_MESSAGE = "send_message";
 	RECEIVE_MESSAGE = "receive_message";
 	NEW_ROOM = "new_room";
+	APPLY_CALL = "apply_call";
+	ANSWER_CALL = "answer_call";
+
+	// call List controller category
 	GET_ENABLE_CALL_USER = "enable_call_user";
+	CALLER = "send_request_call";
 
 	//ETC...
 	USER_ACCOUNT = "account_info";
@@ -63,6 +73,12 @@ var k;
 
 	REQUEST_ENABLE_CALL_LIST = "request:enable_call_list";
 	RESPONSE_ENABLE_CALL_LIST = "response:enable_call_list";
+
+	REQUEST_CALL_DATA = "request:call_data";
+	RESPONSE_CALL_DATA = "response:call_data";
+
+	NOTIFY_CALL = "push:request_call";
+	PUSH_ANSWER_CALL = "push:answer_call";
 
 	DISCONNECT = "disconnect";
 
@@ -260,6 +276,25 @@ var k;
 
 				myPort.postMessage(data);
 			});
+			// 대화신청에 응답을 받는 이벤트
+			socket.on(RESPONSE_CALL_DATA, (res) => {
+				var data = {
+					'type' 		: 		RESPONSE,
+					'category'  : 		CALLER,
+					'resData' 	: 		res
+				}
+				myPort.postMessage(data);
+			});
+			// 대화 신청이 들어온 이벤트
+			socket.on(NOTIFY_CALL, (pushData) => {
+				var data = {
+					'type' 		: 		NOTIFY,
+					'category' 	: 		APPLY_CALL,
+					'pushData' 	: 		pushData
+				};
+				myPort.postMessage(pushData);
+			});
+
 			socket.on(DISCONNECT, () => {
 				console.log("webSocket disconnect");
 				chrome.runtime.onConnect.removeListener(onConnectEvent);
@@ -337,11 +372,19 @@ var k;
 		}else if(data.category == GO_CH_ROOM){
 			wRequestGoChattingRoom(data['roomNum'], data['userNum'], data['listIdx'], client);
 		}else if(data.category == SEND_MESSAGE) {
+			//메시지 전송
 			console.log("SEND MESSAGE");
 			wRequestSendMessage(data['roomHash'], data['roomNum'], data['userNum'], data['userName'], data['message'], client);
 		}else if(data.category == GET_ENABLE_CALL_USER){
+			// 현재 대화가 가능한 친구 목록가져오기
 			console.log(GET_ENABLE_CALL_USER);
 			wRequestGetEnableCallList(data['userNum'], client);
+		}else if(data.category == CALLER){
+			// 상대방에게 대화하려고 보내는 데이터
+			wRequestSendRequestCall(data['callData'],client);
+		}else if(data.category == ANSWER_CALL){
+			//상대방이 응답을 한 데이터
+			wRequestSendAnswerCall(data['callData'], data['answer'],client);
 		}
 	}
 
@@ -430,5 +473,16 @@ var k;
 			'userNum' 			: 			userNum
 		};
 		wSocket.emit(REQUEST_ENABLE_CALL_LIST, requestData);
+	}
+
+	function wRequestSendRequestCall(callData,wSocket){
+		wSocket.emit(REQUEST_CALL_DATA, callData);
+	}
+	function wRequestSendAnswerCall(calleeData, answer, wSocket){
+		var data = {
+			'answer' 	: 	answer,
+			'calleeData': 	calleeData
+		};
+		wSocket.emit(PUSH_ANSWER_CALL, data);
 	}
 })();

@@ -19,7 +19,8 @@ GO_CH_ROOM	= "go_to_chatting_room";
 SEND_MESSAGE = "send_message";
 RECEIVE_MESSAGE = "receive_message";
 NEW_ROOM = "new_room";
-
+APPLY_CALL = "apply_call";
+ANSWER_CALL = "answer_call";
 
 var module = angular.module('magpie_front', ['onsen', 'callList']);
 module.controller('AppController', function($scope, $timeout){ 
@@ -67,6 +68,29 @@ module.controller('AppController', function($scope, $timeout){
 				};
 				$scope.chRoomList.unshift(room);
 				$scope.$apply();
+			}else if(data.category == APPLY_CALL){
+				var callData = data.pushData;
+				var msg = callData['fromName']+"("+callData['fromEmail']+")님의 대화신청입니다. 응하시겠습니까??";
+				ons.notification.confirm(msg, {
+					title : "알림 : 대화신청",
+					buttonLabels : ["거절", "수락"]
+				}).then(
+					(value) => {
+						var answerData = {
+							'type' 		  : 	REQUEST,
+							'category' 	  : 	ANSWER_CALL,
+							'callData' 	  : 	callData
+						};
+						if(value)
+							// 승낙할 경우
+							answerData.answer = true;
+						else
+							// 거절할 경우
+							answerData.answer = false;
+							
+						port.postMessage(answerData);
+					}
+				)
 			}
 		}else if(data.type == RESPONSE){
 			console.log("Response : ", data);

@@ -4,6 +4,12 @@ module.controller("CallListController", ["$scope", function($scope){
 	// 실시간으로 사용자의 정보를 받아와야 함, 그리고 상태변경도 보내야함
 	var GET_ENABLE_CALL_USER = "enable_call_user";
 	var CHANGE_STATUS = "change_status";
+	var CALLER = "send_request_call";
+
+	//user answer type
+	var DISABLE = "disable";
+	var REFUSE = "refuse";
+	var ACCEPT = "accept";
 
 	$scope.callListTitle = "현재 접속된 친구";
 	$scope.enableList = [];
@@ -17,7 +23,23 @@ module.controller("CallListController", ["$scope", function($scope){
 				}else{
 					ons.notification.alert(data['msg'], "목록 가져오기 실패!");
 				}
-
+			}else if(data.category == CALLER){
+				var resData = data.resData;
+				var callee == resData.callData;
+				if(resData.type == ACCEPT){
+					// 응답함 
+					// pageManager.pushPage()
+				}else{
+					var status;
+					if(resData.type == DISABLE)
+						status = "은 대화가 불가능 합니다. 잠시후 다시 시도해주세요..";
+						// 현재 불가능한 상태
+					else
+						status = "께서 대화를 거절하였습니다.";
+						// 거절한 상태						
+					var msg = callee['toName']+"(" +callee['toEmail'] +")"+status;
+					ons.notification.alert(msg, { title : "대화 불가능!"});
+				}
 			}
 		}
 	}
@@ -39,11 +61,35 @@ module.controller("CallListController", ["$scope", function($scope){
 		}).then(
 			(value) => {
 				if(value){
+					var user = $scope.$parent.userProfile;
+					var data = {
+						'fromNum' 		: 	user['userNum'],
+						'fromName'		: 	user['userName'],
+						'fromEmail' 	: 	user['userEmail'],
+						'toNum'			: 	friend['friendNum'],
+						'toName' 		: 	friend['friendName'],
+						'toEmail' 		: 	friend['friendEmail']
+					};
+					var reqData = {
+						'type' 			: 	REQUEST,
+						'category' 		: 	CALLER,
+						'callData' 			: 	data
+					};
+					port.postMessage(reqData);
 					console.log("예");
 				}
 			}
 		);
 	}
+
+	$scope.testDest = function() {
+		console.log("Destroy!!!!");
+	}
+	
+	$scope.testClick = function(){
+		pageManager.pushPage("p2pCall.html");
+	}
+
 	// Destroy Controller
 	$scope.$on("destroy:callList", function(){
 		console.log("end CallListController");

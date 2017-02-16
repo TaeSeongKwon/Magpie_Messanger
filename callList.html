@@ -1,8 +1,11 @@
-<ons-page ng-controller="CallListController">
+<ons-page ng-controller="CallListController" ons-destroy="testDest()">
 	<ons-toolbar>
 		<div class='center'>{{callListTitle}}</div>
 	</ons-toolbar>
 	<ons-list>
+		<ons-list-item ng-click="testClick()">
+
+		</ons-list-item>
 		<ons-list-item ng-repeat="(idx, value) in enableList" ng-click="callToFriend(idx)">
 			<div class='left'>
 				<img class='list__item__thumbnail' src="image/users/a.jpg">

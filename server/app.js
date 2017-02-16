@@ -15,6 +15,11 @@ var config = {
 var port = 9900;
 UNIT_LIST = 50;
 
+//user answer type
+DISABLE = "disable";
+REFUSE = "refuse";
+ACCEPT = "accept";
+
 // Define Communication Event Name
 REQUEST_LOGIN = "request:login";
 RESPONSE_LOGIN = "response:login";
@@ -49,6 +54,12 @@ REQUEST_JOIN_ROOM = "request:join_hash_room";
 
 REQUEST_ENABLE_CALL_LIST = "request:enable_call_list";
 RESPONSE_ENABLE_CALL_LIST = "response:enable_call_list";
+
+REQUEST_CALL_DATA = "request:call_data";
+RESPONSE_CALL_DATA = "response:call_data";
+
+NOTIFY_CALL = "push:request_call";
+PUSH_ANSWER_CALL = "push:answer_call";;
 
 //io.use(socketAsPromised());
 io.listen(port);
@@ -425,7 +436,6 @@ io.on("connection", (socket) => {
 					var tmp = result[idx];
 					var friend = list["user_"+tmp['friendNum']];
 					console.log("userID : ","user_"+tmp['friendNum']);
-					console.log("friend : ", friend);
 					if(friend != null && friend.userEnable){
 						enableList.push(tmp);
 					}
@@ -440,6 +450,42 @@ io.on("connection", (socket) => {
 				connection.end();
 			}
 		);
+	});
+
+	socket.on(REQUEST_CALL_DATA, (req) => {
+		var toNum = req['toNum'];
+		var callee = io.sockets.connected['user_'+toNum];
+
+		if(callee != null && callee.userEnable){
+			callee.emit(NOTIFY_CALL, req);
+		}else{
+			var res = {
+				'isSuccess'		: 		false,
+				'type'			: 		DISABLE,
+				'callData' 		: 		req
+			};
+			socket.emit(RESPONSE_CALL_DATA, res);
+		}
+	});
+
+	socket.on(PUSH_ANSWER_CALL, (req) => {
+		var fromNum = req['fromNum'];
+		var caller = io.sockets.connected['user_'+fromNum];
+		if(caller != null){
+			
+			var res = {
+				'isSuccess'		: 		true,
+				'callData' 		: 		req.calleeData
+			};
+			if(req.answer){
+				res.type = ACCEPT;
+			}
+			else{
+				res.type = REFUSE;
+			}
+
+			socket.emit(RESPONSE_CALL_DATA, res);	
+		}
 	});
 
 	function setRoomName(roomId, roomHash, numList, wSocket, resData){
