@@ -474,7 +474,8 @@ io.on("connection", (socket) => {
 	});
 
 	socket.on(PUSH_ANSWER_CALL, (req) => {
-		var fromNum = req['fromNum'];
+		console.log("PUSH_ANSWER_CALL");
+		var fromNum = req['calleeData']['fromNum'];
 		var list = {};
 		for(var key in io.sockets.connected){
 			var cursor = io.sockets.connected[key];
