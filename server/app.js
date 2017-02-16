@@ -455,7 +455,7 @@ io.on("connection", (socket) => {
 	socket.on(REQUEST_CALL_DATA, (req) => {
 		var toNum = req['toNum'];
 		var callee = io.sockets.connected['user_'+toNum];
-
+		console.log("is True : ", callee.userEnable)
 		if(callee != null && callee.userEnable){
 			callee.emit(NOTIFY_CALL, req);
 		}else{
