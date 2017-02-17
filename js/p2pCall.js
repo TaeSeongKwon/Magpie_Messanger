@@ -9,7 +9,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 	var CREATE_CALL_ROOM = "create_call_room";
 	var OFFER = "offer";
 	var ANSWER = "answer";
-	
+
 	var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
 	var RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
 	var RTCSessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
@@ -36,6 +36,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 	function p2pPortEvent(data){
 		if(data.type == CREATE_CALL_ROOM){
 			console.log("create call room start call!");
+			$scope.callChannel = data.channel;
 			$scope.startCall();
 		}else{
 			if(data.head == "candidate"){
@@ -115,6 +116,12 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 				$scope.port.postMessage(data);
 			}
 		};
+		var channel = connection.createDataChannel($scope.channel, {reliable:false});
+		$scope.setHandleDataChannel(channel);
+		connection.ondatachannel = function(evt){
+	      console.log("onDataChannel : ", evt.channel);
+	      $scope.setHandleDataChannel(evt.channel);
+	    }
 		connection.onaddstream = function(stream){
 		  	console.log("on add stream", stream);
 			var other = document.getElementById('otherDisplay');
@@ -175,6 +182,17 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 			});
 		}
 		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
+	};
+
+	$scope.setHandleDataChannel = function (channel){
+		console.log("set setHandleDataChannel : ", channel);
+		channel.onopen = function(evt){
+			console.log("channel Open!");
+		}
+		channel.onmessage = function(evt){
+			console.log("Channel Data Recevie : ",evt.data);
+			// alert("Received Message : "+evt.data);
+		}
 	};
 	function addMeVideo(stream){
 		var me = document.getElementById('meDisplay');

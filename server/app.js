@@ -524,8 +524,8 @@ io.on("connection", (socket) => {
 		socket.join(socket.callRoom);
 		friend.join(friend.callRoom);
 		console.log(socket.myID+" | "+friend.myID);
-		socket.emit(NOTIFY_CREATE_CALL_ROOM, {});
-		friend.emit(NOTIFY_CREATE_CALL_ROOM, {});
+		socket.emit(NOTIFY_CREATE_CALL_ROOM, { "roomName" : hashName});
+		friend.emit(NOTIFY_CREATE_CALL_ROOM, { "roomName" : hashName});
 		console.log("created call room !");
 
 	});

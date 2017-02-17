@@ -317,9 +317,9 @@
 				myPort.postMessage(data);
 			});
 
-			socket.on(NOTIFY_CREATE_CALL_ROOM, () => {
+			socket.on(NOTIFY_CREATE_CALL_ROOM, (pushData) => {
 				console.log(NOTIFY_CREATE_CALL_ROOM);
-				myPort.postMessage({ 'type' : CREATE_CALL_ROOM});
+				myPort.postMessage({ 'type' : CREATE_CALL_ROOM, "channel" : pushData['roomName']});
 			});
 
 			socket.on(NOTIFY_WEB_RTC_CALL, (pushData) => {
