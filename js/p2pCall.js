@@ -120,10 +120,10 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 	      console.log("onDataChannel : ", evt.channel);
 	      $scope.setHandleDataChannel(evt.channel);
 	    }
-		connection.onaddstream = function(stream){
-		  	console.log("ON ADD STREAM!!!", stream);
+		connection.onaddstream = function(evt){
+		  	console.log("ON ADD STREAM!!!", evt);
 			var other = document.getElementById('otherDisplay');
-			other.srcObject = stream;
+			other.src = window.URL.createObjectURL(evt.stream);
 		};
 		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
 	};
