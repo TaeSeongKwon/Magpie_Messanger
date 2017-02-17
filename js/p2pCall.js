@@ -135,7 +135,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 		}
 	}
 	$scope.addOfferSDP = function(sdp){
-		$scope.connection = new RTCPeerConnection($scope.pc_config);
+		$scope.connection = new RTCPeerConnection($scope.pc_config, $scope.optional);
 		console.log($scope.connection);
 		$scope.initCommonWebRTC($scope.connection);
 		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
