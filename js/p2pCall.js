@@ -63,8 +63,8 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 
 	$scope.createOfferSDP = function(){
 		$scope.connection = new RTCPeerConnection($scope.pc_config);
-		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
 		$scope.initCommonWebRTC($scope.connection);
+		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
 
 		$scope.connection.createOffer().then(
 			(offerSDP) => {
@@ -79,7 +79,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 				var data = {
 					"type" 		: 		WEB_RTC_CALL,
 					"head" 		: 		"offer",
-					"sdp" 		: 		$scope.connection.localDescription
+					"sdp" 		: 		JSON.stringify($scope.connection.localDescription)
 				};
 				$scope.port.postMessage(data);
 
@@ -91,21 +91,21 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 	}
 
 	$scope.initCommonWebRTC = function(connection){
+		connection.onaddstream = function(stream){
+			console.log("on add stream");
+			var other = document.getElementById('otherDisplay');
+			other.srcObject = stream;
+		}
 		connection.onicecandidate = function(evt){
 			console.log("candidate", evt);
 			if(evt.candidate){
 				var data = {
 					"type" 		: 		WEB_RTC_CALL,
 					"head" 		: 		"candidate",
-					"ice" 		: 		evt.candidate
+					"ice" 		: 		JSON.stringify(evt.candidate)
 				};
 				$scope.port.postMessage(data);
 			}
-		}
-		connection.onaddstream = function(stream){
-			console.log("on add stream");
-			var other = document.getElementById('otherDisplay');
-			other.srcObject = stream;
 		}
 	}
 
@@ -152,7 +152,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 			 		var data = {
 						"type" 		: 		WEB_RTC_CALL,
 						"head" 		: 		"answer",
-						"sdp" 		: 		$scope.connection.localDescription
+						"sdp" 		: 		JSON.stringify($scope.connection.localDescription)
 					};
 					$scope.port.postMessage(data);
 				}
@@ -163,6 +163,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 	}
 	function addMeVideo(stream){
 		var me = document.getElementById('meDisplay');
+		console.log("CREATE LOCAL STREAM");
 		me.srcObject= stream;
 		$scope.connection.addStream(stream);
 	}
