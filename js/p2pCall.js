@@ -79,7 +79,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 				var data = {
 					"type" 		: 		WEB_RTC_CALL,
 					"head" 		: 		"offer",
-					"sdp" 		: 		JSON.stringify($scope.connection.localDescription)
+					"sdp" 		: 		$scope.connection.localDescription
 				};
 				$scope.port.postMessage(data);
 
@@ -102,7 +102,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 				var data = {
 					"type" 		: 		WEB_RTC_CALL,
 					"head" 		: 		"candidate",
-					"ice" 		: 		JSON.stringify(evt.candidate)
+					"ice" 		: 		evt.candidate
 				};
 				$scope.port.postMessage(data);
 			}
@@ -152,7 +152,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 			 		var data = {
 						"type" 		: 		WEB_RTC_CALL,
 						"head" 		: 		"answer",
-						"sdp" 		: 		JSON.stringify($scope.connection.localDescription)
+						"sdp" 		: 		$scope.connection.localDescription
 					};
 					$scope.port.postMessage(data);
 				}
