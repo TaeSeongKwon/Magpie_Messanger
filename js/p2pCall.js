@@ -19,9 +19,14 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 	    credential: '1q2w3e4r',
 	    username: 'test12'
 	};
-
+	var DtlsSrtpKeyAgreement = {
+   		DtlsSrtpKeyAgreement: true
+	};
+	$scope.optional = {
+  		 optional: [DtlsSrtpKeyAgreement]
+	};
 	$scope.pc_config = { 
-		"iceServers" 		: 		[STUN/*, TURN*/]
+		"iceServers" 		: 		[STUN, TURN]
 	};	
 	function p2pPortEvent(data){
 		if(data.type == CREATE_CALL_ROOM){
@@ -62,7 +67,9 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 	}
 
 	$scope.createOfferSDP = function(){
-		$scope.connection = new RTCPeerConnection($scope.pc_config);
+		console.log($scope.pc_config);
+		console.log($scope.optional);
+		$scope.connection = new RTCPeerConnection($scope.pc_config, $scope.optional);
 		$scope.initCommonWebRTC($scope.connection);
 		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
 
