@@ -9,7 +9,12 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 	var CREATE_CALL_ROOM = "create_call_room";
 	var OFFER = "offer";
 	var ANSWER = "answer";
+	
 	var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+	var RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+	var RTCSessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
+	var RTCIceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
+
 	var mediaConfig = { video : true, audio : true };
 	var STUN = {
 	    urls: 'stun:stun.l.google.com:19302'
@@ -76,7 +81,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 		console.log($scope.connection);
 		$scope.connection.createOffer().then(
 			function (offerSDP){
-				console.log("create Offer SDP");
+				console.log("create Offer SDP", offerSDP);
 				return $scope.connection.setLocalDescription(offerSDP);
 			}
 		).then(
@@ -128,7 +133,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 		if($scope.connection){
 			$scope.connection.setRemoteDescription(answerSDP).then(
 				() => {
-					console.log("set Remote SDP (answer)");
+					console.log("set Remote SDP (answer)", answerSDP);
 				}
 			).catch(function (err){
 				console.log(err);
@@ -144,12 +149,12 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 		if($scope.connection){
 			$scope.connection.setRemoteDescription(offerSDP).then(
 				function(){
-					console.log("set Remote SDP (offer)");
+					console.log("set Remote SDP (offer)", offerSDP);
 					return $scope.connection.createAnswer();
 				}
 			).then(
 				function(answerSDP){
-					console.log("create Answer SDP");
+					console.log("create Answer SDP", answerSDP);
 					return $scope.connection.setLocalDescription(answerSDP);
 				}
 			).then(
