@@ -114,12 +114,12 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 				$scope.port.postMessage(data);
 			}
 		};
-		var channel = connection.createDataChannel($scope.channel, {reliable:false});
-		$scope.setHandleDataChannel(channel);
-		connection.ondatachannel = function(evt){
-	      console.log("onDataChannel : ", evt.channel);
-	      $scope.setHandleDataChannel(evt.channel);
-	    }
+		// var channel = connection.createDataChannel($scope.channel, {reliable:false});
+		// $scope.setHandleDataChannel(channel);
+		// connection.ondatachannel = function(evt){
+	 //      console.log("onDataChannel : ", evt.channel);
+	 //      $scope.setHandleDataChannel(evt.channel);
+	 //    }
 		connection.onaddstream = function(evt){
 		  	console.log("ON ADD STREAM!!!", evt);
 			var other = document.getElementById('otherDisplay');
