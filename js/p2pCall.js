@@ -1,4 +1,5 @@
 var p2pCall = angular.module("p2pCall", []);
+var con;
 p2pCall.controller("CallController", ["$scope", function($scope) {
 	console.log("$scope : ", $scope);
 	$scope.port = $scope.$root.shareData['myPort'];
@@ -13,18 +14,17 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 	var STUN = {
 	    urls: 'stun:stun.l.google.com:19302'
 	};
-
 	var TURN = {
-	    urls: 'turn:www.project-knock.tk:3478',
-	    credential: '1q2w3e4r',
-	    username: 'test12'
+	   	urls: 'turn:www.project-knock.tk:3478',
+		credential: '1q2w3e4r',
+		username: 'test12'
 	};
-	var DtlsSrtpKeyAgreement = {
-   		DtlsSrtpKeyAgreement: true
-	};
-	$scope.optional = {
-  		 optional: [DtlsSrtpKeyAgreement]
-	};
+	// var DtlsSrtpKeyAgreement = {
+ //   		DtlsSrtpKeyAgreement: true
+	// };
+	// $scope.optional = {
+ //  		 optional: [DtlsSrtpKeyAgreement]
+	// };
 	$scope.pc_config = { 
 		"iceServers" 		: 		[STUN, TURN]
 	};	
@@ -69,40 +69,36 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 	$scope.createOfferSDP = function(){
 		console.log($scope.pc_config);
 		console.log($scope.optional);
-		$scope.connection = new RTCPeerConnection($scope.pc_config, $scope.optional);
+
+		$scope.connection = new RTCPeerConnection($scope.pc_config);
 		$scope.initCommonWebRTC($scope.connection);
-		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
+		con = $scope.connection;
 		console.log($scope.connection);
 		$scope.connection.createOffer().then(
-			(offerSDP) => {
+			function (offerSDP){
 				console.log("create Offer SDP");
 				return $scope.connection.setLocalDescription(offerSDP);
 			}
 		).then(
-			() => {
+			function(){
 				console.log("set local SDP (offer)");
 				var offerSDP = $scope.connection.localDescription;
 				// answer에게 offerSDP보내기
 				var data = {
 					"type" 		: 		WEB_RTC_CALL,
 					"head" 		: 		"offer",
-					"sdp" 		: 		$scope.connection.localDescription
+					"sdp" 		: 		offerSDP
 				};
 				$scope.port.postMessage(data);
-
 			}
 		).catch(function(err){
 			console.log(err);
 		});
+		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
 		
-	}
+	};
 
 	$scope.initCommonWebRTC = function(connection){
-		connection.onaddstream = function(stream){
-			console.log("on add stream");
-			var other = document.getElementById('otherDisplay');
-			other.srcObject = stream;
-		}
 		connection.onicecandidate = function(evt){
 			console.log("candidate", evt);
 			if(evt.candidate){
@@ -113,15 +109,20 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 				};
 				$scope.port.postMessage(data);
 			}
-		}
-	}
+		};
+		connection.onaddstream = function(stream){
+		  	console.log("on add stream", stream);
+			var other = document.getElementById('otherDisplay');
+			// other.srcObject = stream;
+		};
+	};
 
 	$scope.addCandidate = function(ice){
 		var candidate = new RTCIceCandidate(ice);
 		if($scope.connection){
 			$scope.connection.addIceCandidate(candidate);
 		}
-	}
+	};
 	$scope.addAnswerSDP = function(sdp){
 		var answerSDP = new RTCSessionDescription(sdp);
 		if($scope.connection){
@@ -133,34 +134,34 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 				console.log(err);
 			});
 		}
-	}
+	};
 	$scope.addOfferSDP = function(sdp){
-		$scope.connection = new RTCPeerConnection($scope.pc_config, $scope.optional);
-		console.log($scope.connection);
+		$scope.connection = new RTCPeerConnection($scope.pc_config);
 		$scope.initCommonWebRTC($scope.connection);
-		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
-
-		var answerSDP = new RTCSessionDescription(sdp);
+		console.log($scope.connection);
+		con = $scope.connection;
+		var offerSDP = new RTCSessionDescription(sdp);
 		if($scope.connection){
-			$scope.connection.setRemoteDescription(answerSDP).then(
-				() => {
+			$scope.connection.setRemoteDescription(offerSDP).then(
+				function(){
 					console.log("set Remote SDP (offer)");
 					return $scope.connection.createAnswer();
 				}
 			).then(
-				(answerSDP) => {
+				function(answerSDP){
 					console.log("create Answer SDP");
 					return $scope.connection.setLocalDescription(answerSDP);
 				}
 			).then(
-				() => {
+				function(){
+					var sdp = $scope.connection.localDescription;
 					console.log("set Local SDP (answer)");
-			 		console.log($scope.connection.localDescription);
+			 		console.log(sdp);
 			 		// offer에게 answer sdp 보내기
 			 		var data = {
 						"type" 		: 		WEB_RTC_CALL,
 						"head" 		: 		"answer",
-						"sdp" 		: 		$scope.connection.localDescription
+						"sdp" 		: 		sdp
 					};
 					$scope.port.postMessage(data);
 				}
@@ -168,15 +169,16 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 				console.log(err);
 			});
 		}
-	}
+		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
+	};
 	function addMeVideo(stream){
 		var me = document.getElementById('meDisplay');
 		console.log("CREATE LOCAL STREAM");
 		me.srcObject= stream;
 		$scope.connection.addStream(stream);
-	}
+	};
 	function errorUserMedia(error){
 		console.log(error);
-	}
+	};
 	
 }]);
