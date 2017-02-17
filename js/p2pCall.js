@@ -100,8 +100,6 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 		).catch(function(err){
 			console.log(err);
 		});
-		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
-		
 	};
 
 	$scope.initCommonWebRTC = function(connection){
@@ -123,10 +121,11 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 	      $scope.setHandleDataChannel(evt.channel);
 	    }
 		connection.onaddstream = function(stream){
-		  	console.log("on add stream", stream);
+		  	console.log("ON ADD STREAM!!!", stream);
 			var other = document.getElementById('otherDisplay');
-			// other.srcObject = stream;
+			other.srcObject = stream;
 		};
+		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
 	};
 
 	$scope.addCandidate = function(ice){
@@ -181,7 +180,6 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 				console.log(err);
 			});
 		}
-		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
 	};
 
 	$scope.setHandleDataChannel = function (channel){
