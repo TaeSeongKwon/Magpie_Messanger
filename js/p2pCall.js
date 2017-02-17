@@ -72,7 +72,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 		$scope.connection = new RTCPeerConnection($scope.pc_config, $scope.optional);
 		$scope.initCommonWebRTC($scope.connection);
 		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
-		$console.log($scope.connection);
+		console.log($scope.connection);
 		$scope.connection.createOffer().then(
 			(offerSDP) => {
 				console.log("create Offer SDP");
@@ -136,10 +136,10 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 	}
 	$scope.addOfferSDP = function(sdp){
 		$scope.connection = new RTCPeerConnection($scope.pc_config);
-		$console.log($scope.connection);
+		console.log($scope.connection);
 		$scope.initCommonWebRTC($scope.connection);
 		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
-		
+
 		var answerSDP = new RTCSessionDescription(sdp);
 		if($scope.connection){
 			$scope.connection.setRemoteDescription(answerSDP).then(
