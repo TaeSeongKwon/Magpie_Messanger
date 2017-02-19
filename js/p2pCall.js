@@ -114,6 +114,9 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 				$scope.port.postMessage(data);
 			}
 		};
+		connection.oniceconnectionstatechange = function(evt){
+			console.log("change iceconnection state change");
+		}
 		// var channel = connection.createDataChannel($scope.channel, {reliable:false});
 		// $scope.setHandleDataChannel(channel);
 		// connection.ondatachannel = function(evt){
