@@ -68,6 +68,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 		// $scope.port.onMessage.removeListener(p2pPortEvent);
 	}
 	$scope.startCall = function(){
+		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
 		if($scope.callData != null)
 			$scope.createOfferSDP();
 	}
@@ -80,6 +81,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 		$scope.initCommonWebRTC($scope.connection);
 		con = $scope.connection;
 		console.log($scope.connection);
+		$scope.connection.addStream($scope.localStream);
 		$scope.connection.createOffer().then(
 			function (offerSDP){
 				console.log("create Offer SDP", offerSDP);
@@ -115,7 +117,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 			}
 		};
 		connection.oniceconnectionstatechange = function(evt){
-			console.log("change iceconnection state change");
+			console.log("change iceconnection state change : ", evt);
 		}
 		// var channel = connection.createDataChannel($scope.channel, {reliable:false});
 		// $scope.setHandleDataChannel(channel);
@@ -128,7 +130,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 			var other = document.getElementById('otherDisplay');
 			other.src = window.URL.createObjectURL(evt.stream);
 		};
-		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
+		
 	};
 
 	$scope.addCandidate = function(ice){
@@ -152,6 +154,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 	$scope.addOfferSDP = function(sdp){
 		$scope.connection = new RTCPeerConnection($scope.pc_config);
 		$scope.initCommonWebRTC($scope.connection);
+		$scope.connection.addStream($scope.localStream);
 		console.log($scope.connection);
 		con = $scope.connection;
 		var offerSDP = new RTCSessionDescription(sdp);
@@ -199,7 +202,8 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 		var me = document.getElementById('meDisplay');
 		console.log("CREATE LOCAL STREAM");
 		me.srcObject= stream;
-		$scope.connection.addStream(stream);
+		$scope.localStream = stream;
+		//$scope.connection.addStream(stream);
 	};
 	function errorUserMedia(error){
 		console.log(error);
