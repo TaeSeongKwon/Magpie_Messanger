@@ -95,6 +95,7 @@
 	REQUEST_FILE_SEND = "request:file_send";
 	RESPONSE_FILE_SEND = "response:file_send";
 	PUSH_FILE_SEND = "push:file_send";
+	RETURN_FILE_SEND "return:file_send";
 
 	DISCONNECT = "disconnect";
 
@@ -344,6 +345,10 @@
 			socket.on(PUSH_FILE_SEND, (pushData) =>{
 				console.log(PUSH_FILE_SEND, pushData);
 				myPort.postMessage(pushData);
+			});
+			socket.on(RESPONSE_FILE_SEND, (res) => {
+				console.log(RESPONSE_FILE_SEND, res);
+				myPort.postMessage(res);
 			});
 			socket.on(DISCONNECT, () => {
 				console.log("webSocket disconnect");

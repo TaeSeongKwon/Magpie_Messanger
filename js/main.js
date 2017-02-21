@@ -23,6 +23,7 @@ APPLY_CALL = "apply_call";
 ANSWER_CALL = "answer_call";
 
 PUSH_FILE_SEND = "push:file_send";
+RETURN_FILE_SEND "return:file_send";
 
 SimplePacket = function(type){
 		this.__constructor(type);
@@ -58,6 +59,27 @@ module.controller('AppController', function($scope, $timeout){
 		if(data.head == PUSH_FILE_SEND){
 			var body = data.body;
 			console.log(PUSH_FILE_SEND,body);
+			var msg = body['fromName'] + "("+body['fromEmail']+")님 께서 파일전송을 요청하셨습니다. 수락하시겠습니까??";
+			ons.notification.confirm(msg, { 
+				title : "요청알림", 
+				buttonLabels : ["거절", "수락"]
+			}).then(
+				(value) => {
+					var tmp = {
+						"hsData"  :  body,
+						"isAccept" : true
+					};
+					if(!value) {
+						tmp['isAccept'] = false;
+					}
+					var packet = new SimplePacket(RETURN_FILE_SEND);
+					packet.setBody(tmp);
+					port.postMessage(packet);
+				},
+				(error) => {
+					console.log(error);
+				}
+			);
 			return ;
 		}
 		if(data.type == CONNECT){

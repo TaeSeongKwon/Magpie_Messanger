@@ -73,6 +73,7 @@ RESPONSE_USABLE_FILE_USER = "response:usable_file_user";
 REQUEST_FILE_SEND = "request:file_send";
 RESPONSE_FILE_SEND = "response:file_send";
 PUSH_FILE_SEND = "push:file_send";
+RETURN_FILE_SEND "return:file_send";
 
 //io.use(socketAsPromised());
 io.listen(port);
@@ -610,6 +611,24 @@ io.on("connection", (socket) => {
 			};
 			socket.emit(RESPONSE_FILE_SEND, packet);
 		}
+	});
+	socket.on(RETURN_FILE_SEND, (returnData) => {
+		var list = {};
+		var body = returnDtat['body'];
+		var fromNum = body['hsData']['fromNum'];
+		for(var key in io.sockets.connected){
+			var cursor = io.sockets.connected[key];
+			list[cursor.myID] = cursor;
+		}
+		var user = list["user_"+fromNum];
+		if(user != null){
+			var packet = {
+				"head" 		: 		RESPONSE_FILE_SEND,
+				"body" 		: 		body
+			};
+			user.emit(RESPONSE_FILE_SEND, packet);
+		}
+
 	});
 	
 	function setRoomName(roomId, roomHash, numList, wSocket, resData){

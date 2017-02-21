@@ -63,11 +63,14 @@ sendFileList.controller("UsableController", ["$scope", function($scope){
 				ons.notification.alert("사용자 목록을 불러오는데 실패했습니다.", {title : "ERROR!"});
 			}
 		}else if(head == RESPONSE_FILE_SEND){
+			console.log(RESPONSE_FILE_SEND, body);
 			if(body.isSuccess){
 				if(body.isAccept){
-					
+
 				}else{
-					ons.notification.alert("사용자 목록을 불러오는데 실패했습니다.", {title : "요청실패!"});	
+					var hsData = body['hsData'];
+					var msg = hsData['toName'] +"("+hsData['toEmail']+")님께서 요청을 거절하셨습니다."
+					ons.notification.alert("사용자 목록을 불러오는데 실패했습니다.", {title : "요청결과!"});	
 				}
 			}else{
 				ons.notification.alert(body.msg, {title : "요청실패!"});	
