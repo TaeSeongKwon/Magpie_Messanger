@@ -656,9 +656,21 @@ io.on("connection", (socket) => {
 			"head"			: 		RESPONSE_WEB_RTC_FILE_ROOM,
 			"body"			: 		{"roomHash" : hashName}
 		};
+		socket.fileRoom = hashName;
+		friend.fileRoom = hashName;
+		socket.join(socket.fileRoom);
+		friend.join(friend.fileRoom);
 		socket.emit(RESPONSE_WEB_RTC_FILE_ROOM, userPacket);
 		userPacket['head'] = PUSH_WEB_RTC_FILE_ROOM;
 		friend.emit(PUSH_WEB_RTC_FILE_ROOM, userPacket);
+	});
+	socket.on(WEB_RTC_FILE_HANDSHAKE, (req) => {
+		console.log(WEB_RTC_FILE_HANDSHAKE, req);
+		var packet = {
+			"head" 			: 		WEB_RTC_FILE_HANDSHAKE,
+			"body"			: 		req
+		};
+		socket.broadcast.to(socket.fileRoom).emit(WEB_RTC_FILE_HANDSHAKE, packet);
 	});
 	
 	function setRoomName(roomId, roomHash, numList, wSocket, resData){
