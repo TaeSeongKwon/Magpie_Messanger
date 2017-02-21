@@ -112,15 +112,19 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 		$scope.connection.setRemoteDescription(sdp).then(
 			() => {
 				console.log("Success > Set Offer Description");
-				return $scope.connection.createAnswer();
+				return $scope.connection.createAnswer(;);
 			}
 		).then(
 			(sdp) => {
 				console.log("Success > Create Answer Description : ", sdp);
-				// send answer sdp;
+				return $scope.connection.setLocalDescription(sdp)
+			}
+		).then(
+			() => {
+				console.log("Success > Set Local Description(Answer)");
 				var tmp = {
 					"type" 		: 		"answer",
-					"sdp"		: 		sdp
+					"sdp"		: 		$scope.connection.localDescription
 				};
 				var packet = new SimplePacket(WEB_RTC_FILE_HANDSHAKE);
 				packet.setBody(tmp);
