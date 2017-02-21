@@ -112,7 +112,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 		$scope.connection.setRemoteDescription(sdp).then(
 			() => {
 				console.log("Success > Set Offer Description");
-				return $scope.connection.createAnswer(;);
+				return $scope.connection.createAnswer();
 			}
 		).then(
 			(sdp) => {
