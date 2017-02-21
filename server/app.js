@@ -7,8 +7,8 @@ var crypto			= require("crypto");
 
 var config = {
 	host	 		: "localhost",
-	user	 		: "root",
-	// password		: "gksksla183",
+	// user	 		: "root",
+	password		: "gksksla183",
 	password		: "root",
 	database		: "MAGPIE_DB"
 };
