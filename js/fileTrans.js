@@ -22,7 +22,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 
 	$scope.initController = function(){
 		console.log("Initialize TransController!");
-		$socpe.port = $scope.$root.myPort;
+		$scope.port = $scope.$root.myPort;
 		$scope.port.onMessage.addListener($scope.onMessageEvent);
 		$scope.connection = null;
 		$scope.isSender = $scope.$root.isSender;
@@ -153,11 +153,11 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				};
 				var packet = new SimplePacket(WEB_RTC_FILE_HANDSHAKE);
 				packet.setBody(tmp);
-				$socpe.port.postMessage(packet);
+				$scope.port.postMessage(packet);
 			}
 		}
 		$scope.channel = connection.createDataChannel($scope.channelHash, {reliable:false});
-		
+
 		console.log("****** Channel ******", $scope.channel);
 		console.log("****** Connection ******", $scope.connection);
 
