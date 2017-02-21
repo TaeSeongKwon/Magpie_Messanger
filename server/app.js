@@ -602,12 +602,12 @@ io.on("connection", (socket) => {
 		}else{
 			var data = {
 				isSuccess 	: 	 false,
-				msg 		: 	 "현재 요청하신 사용자분은 이 기능을 사용하실 수 없는 상태에 있습니다. 잠시후 시도해주세요...";
-			}
+				msg 		: 	 "현재 요청하신 사용자분은 이 기능을 사용하실 수 없는 상태에 있습니다. 잠시후 시도해주세요..."
+			};
 			var packet = {
 				head 	: 	RESPONSE_FILE_SEND,
 				body 	: 	data
-			}
+			};
 			socket.emit(RESPONSE_FILE_SEND, packet);
 		}
 	});
