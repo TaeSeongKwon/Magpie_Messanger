@@ -7,9 +7,9 @@ var crypto			= require("crypto");
 
 var config = {
 	host	 		: "localhost",
-	// user	 		: "root",
+	user	 		: "root",
 	password		: "gksksla183",
-	password		: "root",
+	// password		: "root",
 	database		: "MAGPIE_DB"
 };
 var port = 9909;
