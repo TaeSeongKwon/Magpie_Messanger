@@ -346,6 +346,7 @@
 				console.log(PUSH_FILE_SEND, pushData);
 				myPort.postMessage(pushData);
 			});
+			
 			socket.on(RESPONSE_FILE_SEND, (res) => {
 				console.log(RESPONSE_FILE_SEND, res);
 				myPort.postMessage(res);

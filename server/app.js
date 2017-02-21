@@ -615,6 +615,7 @@ io.on("connection", (socket) => {
 	socket.on(RETURN_FILE_SEND, (returnData) => {
 		var list = {};
 		var body = returnData['body'];
+		console.log(returnData);
 		var fromNum = body['hsData']['fromNum'];
 		for(var key in io.sockets.connected){
 			var cursor = io.sockets.connected[key];
