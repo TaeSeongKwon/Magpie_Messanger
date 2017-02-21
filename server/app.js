@@ -75,6 +75,12 @@ RESPONSE_FILE_SEND = "response:file_send";
 PUSH_FILE_SEND = "push:file_send";
 RETURN_FILE_SEND = "return:file_send";
 
+WEB_RTC_FILE_HANDSHAKE = "webRTC:file_handshake";
+REQUEST_WEB_RTC_FILE_ROOM = "request:webrtc_file_room";
+RESPONSE_WEB_RTC_FILE_ROOM = "response:webrtc_file_room";
+
+PUSH_WEB_RTC_FILE_ROOM = "push:webrtc_file_room";
+
 //io.use(socketAsPromised());
 io.listen(port);
 
@@ -629,6 +635,30 @@ io.on("connection", (socket) => {
 			user.emit(RESPONSE_FILE_SEND, packet);
 		}
 
+	});
+
+	socket.on(REQUEST_WEB_RTC_FILE_ROOM, (req) => {
+		var list = {};
+		var fromNum = req['fromNum'];
+		console.log(req);
+		for(var key in io.sockets.connected){
+			var cursor = io.sockets.connected[key];
+			list[cursor.myID] = cursor;
+		}
+		var friend = list["user_"+fromNum];
+
+		var roomName = "file_room_" + req["fromEmail"]+"&"+req['toEmail']+"_"+new Date().toString();
+		var encoder = crypto.createHash('sha1');
+		encoder.update(roomName);
+		var hashName = encoder.digest("hex");
+
+		var userPacket = {
+			"head"			: 		RESPONSE_WEB_RTC_FILE_ROOM,
+			"body"			: 		{"roomHash" : hashName}
+		};
+		socket.emit(RESPONSE_WEB_RTC_FILE_ROOM, userPacket);
+		userPacket['head'] = PUSH_WEB_RTC_FILE_ROOM;
+		friend.emit(PUSH_WEB_RTC_FILE_ROOM, userPacket);
 	});
 	
 	function setRoomName(roomId, roomHash, numList, wSocket, resData){

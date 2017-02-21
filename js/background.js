@@ -97,6 +97,12 @@
 	PUSH_FILE_SEND = "push:file_send";
 	RETURN_FILE_SEND = "return:file_send";
 
+	WEB_RTC_FILE_HANDSHAKE = "webRTC:file_handshake";
+	REQUEST_WEB_RTC_FILE_ROOM = "request:webrtc_file_room";
+	RESPONSE_WEB_RTC_FILE_ROOM = "response:webrtc_file_room";
+
+	PUSH_WEB_RTC_FILE_ROOM = "push:webrtc_file_room";
+
 	DISCONNECT = "disconnect";
 
 
@@ -339,18 +345,27 @@
 				myPort.postMessage(res);
 			});
 			socket.on(RESPONSE_FILE_SEND, (res) => {
-				console.log(REQUEST_FILE_SEND, res);
+				console.log(RESPONSE_FILE_SEND, res);
 				myPort.postMessage(res);
 			});
 			socket.on(PUSH_FILE_SEND, (pushData) =>{
 				console.log(PUSH_FILE_SEND, pushData);
 				myPort.postMessage(pushData);
 			});
-			
-			socket.on(RESPONSE_FILE_SEND, (res) => {
-				console.log(RESPONSE_FILE_SEND, res);
+
+			socket.on(RESPONSE_WEB_RTC_FILE_ROOM, (res) => {
+				console.log(RESPONSE_WEB_RTC_FILE_ROOM);
 				myPort.postMessage(res);
 			});
+			socket.on(PUSH_WEB_RTC_FILE_ROOM, (pushData) => {
+				console.log(PUSH_WEB_RTC_FILE_ROOM);
+				myPort.postMessage(pushData);
+			});
+			socket.on(WEB_RTC_FILE_HANDSHAKE, (packet) => {
+				console.log(WEB_RTC_FILE_HANDSHAKE);
+				myPort.postMessage(packet);
+			});
+
 			socket.on(DISCONNECT, () => {
 				console.log("webSocket disconnect");
 				chrome.runtime.onConnect.removeListener(onConnectEvent);

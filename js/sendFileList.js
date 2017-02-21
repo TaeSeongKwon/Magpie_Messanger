@@ -7,9 +7,10 @@ sendFileList.controller("UsableController", ["$scope", function($scope){
 	var RESPONSE_USABLE_FILE_USER = "response:usable_file_user";
 	var REQUEST_FILE_SEND = "request:file_send";
 	var RESPONSE_FILE_SEND = "response:file_send";
-
+	var REQUEST_CREATE_FILE_ROOM = "request:create_file_room";
+	var RESPONSE_CREATE_FILE_ROOM = "request:create_file_room";
 	$scope.usableList = [];
-
+	// $scope.$root.isSender = true;
 	$scope.init = function(){
 		console.log("START : UsableController!");
 		var reqData = new SimplePacket(REQUEST_USABLE_FILE_USER);
@@ -42,6 +43,7 @@ sendFileList.controller("UsableController", ["$scope", function($scope){
 					var packet = new SimplePacket(REQUEST_FILE_SEND);
 					packet.setBody(hsData);
 					port.postMessage(packet);
+					loginModal.show();
 				}
 			},
 			(error) => {
@@ -63,18 +65,28 @@ sendFileList.controller("UsableController", ["$scope", function($scope){
 				ons.notification.alert("사용자 목록을 불러오는데 실패했습니다.", {title : "ERROR!"});
 			}
 		}else if(head == RESPONSE_FILE_SEND){
+			loginModal.hide();
 			console.log(RESPONSE_FILE_SEND, body);
 			if(body.isSuccess){
 				if(body.isAccept){
-
+					$scope.$root.hsData = body['hsData'];
+					$scope.$root.isSender = true;
+					pageManager.pushPage("fileTransPage.html");
 				}else{
 					var hsData = body['hsData'];
 					var msg = hsData['toName'] +"("+hsData['toEmail']+")님께서 요청을 거절하셨습니다."
-					ons.notification.alert("사용자 목록을 불러오는데 실패했습니다.", {title : "요청결과!"});	
+					ons.notification.alert(msg, {title : "요청결과!"});	
 				}
 			}else{
 				ons.notification.alert(body.msg, {title : "요청실패!"});	
 			}
 		}
 	}
+	$scope.hide = function(){
+		console.log("destroy:sendFileList");
+		port.onMessage.removeListener($scope.onMessageEvnet);
+	}
+	$scope.$on("destroy:sendFileList", function(){
+		$scope.hide();
+	});
 }]);

@@ -45,7 +45,7 @@ SimplePacket.prototype.__constructor = function(type){
 }
 
 
-var module = angular.module('magpie_front', ['onsen', 'callList', "p2pCall", "sendFileList"]);
+var module = angular.module('magpie_front', ['onsen', 'callList', "p2pCall", "sendFileList", "fileTrans"]);
 module.controller('AppController', function($scope, $timeout){ 
 	var port = chrome.runtime.connect({name : "magpie_app"});
 	$scope.myPort = port;
@@ -76,6 +76,10 @@ module.controller('AppController', function($scope, $timeout){
 					var packet = new SimplePacket(RETURN_FILE_SEND);
 					packet.setBody(tmp);
 					port.postMessage(packet);
+					
+					// 바로 파일 전송 페이지로 이동한다. 
+					$scope.$root.isSender = false;
+					pageManager.pushPage("fileTransPage.html");
 				},
 				(error) => {
 					console.log(error);
@@ -272,6 +276,9 @@ module.controller('AppController', function($scope, $timeout){
 		if(prePage == "callList.html"){
 			console.log("dest");
 			$scope.$broadcast("destroy:callList", {});
+		}else if(prePage == "sendFileList.html"){
+			console.log("dest");
+			$scope.$broadcast("destroy:sendFileList", {});
 		}
 		sideMenu.content.load(menuName);
 		

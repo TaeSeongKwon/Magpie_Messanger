@@ -3,6 +3,7 @@
 		<div class='center'>현재 사용자</div>
 	</ons-toolbar>
 	<ons-list>
+		<ons-list-item ng-click="pageManager.pushPage('fileTransPage.html')"></ons-list-item>
 		<ons-list-item ng-repeat="(idx, value) in usableList" ng-click="test(idx)">
 			<div class='left'>
 				<img class='list__item__thumbnail' src="">
