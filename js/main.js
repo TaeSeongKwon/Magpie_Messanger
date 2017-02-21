@@ -67,7 +67,8 @@ module.controller('AppController', function($scope, $timeout){
 				(value) => {
 					var tmp = {
 						"hsData"  :  body,
-						"isAccept" : true
+						"isAccept" : true,
+						"isSuccess" : true
 					};
 					if(!value) {
 						tmp['isAccept'] = false;
