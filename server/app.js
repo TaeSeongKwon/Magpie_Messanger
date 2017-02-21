@@ -614,9 +614,8 @@ io.on("connection", (socket) => {
 	});
 	socket.on(RETURN_FILE_SEND, (returnData) => {
 		var list = {};
-		var body = returnData['body'];
 		console.log(returnData);
-		var fromNum = body['hsData']['fromNum'];
+		var fromNum = returnData['hsData']['fromNum'];
 		for(var key in io.sockets.connected){
 			var cursor = io.sockets.connected[key];
 			list[cursor.myID] = cursor;
@@ -625,7 +624,7 @@ io.on("connection", (socket) => {
 		if(user != null){
 			var packet = {
 				"head" 		: 		RESPONSE_FILE_SEND,
-				"body" 		: 		body
+				"body" 		: 		returnData
 			};
 			user.emit(RESPONSE_FILE_SEND, packet);
 		}
