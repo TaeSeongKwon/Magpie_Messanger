@@ -129,7 +129,6 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 		).catch(function(error){
 			console.log("Fail > SET Offer Description : ",error);
 		});
-		peer.setLocalDescription
 	}
 	$scope.addAnswer = function(sdp){
 		// $scope.connection = 
