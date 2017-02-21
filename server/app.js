@@ -646,7 +646,7 @@ io.on("connection", (socket) => {
 			list[cursor.myID] = cursor;
 		}
 		var friend = list["user_"+fromNum];
-
+		console.log("Friend : ", (friend != null));
 		var roomName = "file_room_" + req["fromEmail"]+"&"+req['toEmail']+"_"+new Date().toString();
 		var encoder = crypto.createHash('sha1');
 		encoder.update(roomName);
@@ -654,7 +654,7 @@ io.on("connection", (socket) => {
 
 		var userPacket = {
 			"head"			: 		RESPONSE_WEB_RTC_FILE_ROOM,
-			"body"			: 		{"roomHash" : hashName}
+			"body"			: 		{"channelHash" : hashName}
 		};
 		socket.fileRoom = hashName;
 		friend.fileRoom = hashName;
@@ -665,7 +665,7 @@ io.on("connection", (socket) => {
 		friend.emit(PUSH_WEB_RTC_FILE_ROOM, userPacket);
 	});
 	socket.on(WEB_RTC_FILE_HANDSHAKE, (req) => {
-		console.log(WEB_RTC_FILE_HANDSHAKE, req);
+		// console.log(WEB_RTC_FILE_HANDSHAKE, req);
 		var packet = {
 			"head" 			: 		WEB_RTC_FILE_HANDSHAKE,
 			"body"			: 		req
