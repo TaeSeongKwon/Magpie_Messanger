@@ -92,6 +92,10 @@
 	REQUEST_USABLE_FILE_USER = "request:usable_file_user";
 	RESPONSE_USABLE_FILE_USER = "response:usable_file_user";
 
+	REQUEST_FILE_SEND = "request:file_send";
+	RESPONSE_FILE_SEND = "response:file_send";
+	PUSH_FILE_SEND = "push:file_send";
+
 	DISCONNECT = "disconnect";
 
 
@@ -330,13 +334,22 @@
 				myPort.postMessage(pushData);
 			});
 			socket.on(RESPONSE_USABLE_FILE_USER, (res) => {
-				console.log(RESPONSE_USABLE_FILE_USER);
+				console.log(RESPONSE_USABLE_FILE_USER, res);
 				myPort.postMessage(res);
-			})
+			});
+			socket.on(RESPONSE_FILE_SEND, (res) => {
+				console.log(REQUEST_FILE_SEND, res);
+				myPort.postMessage(res);
+			});
+			socket.on(PUSH_FILE_SEND, (pushData) =>{
+				console.log(PUSH_FILE_SEND, pushData);
+				myPort.postMessage(pushData);
+			});
 			socket.on(DISCONNECT, () => {
 				console.log("webSocket disconnect");
 				chrome.runtime.onConnect.removeListener(onConnectEvent);
 			});
+
 
 			
 

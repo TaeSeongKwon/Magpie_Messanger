@@ -69,6 +69,11 @@ NOTIFY_WEB_RTC_CALL = "push:web_rtc_call";
 
 REQUEST_USABLE_FILE_USER = "request:usable_file_user";
 RESPONSE_USABLE_FILE_USER = "response:usable_file_user";
+
+REQUEST_FILE_SEND = "request:file_send";
+RESPONSE_FILE_SEND = "response:file_send";
+PUSH_FILE_SEND = "push:file_send";
+
 //io.use(socketAsPromised());
 io.listen(port);
 
@@ -532,6 +537,10 @@ io.on("connection", (socket) => {
 		console.log("created call room !");
 
 	});
+	socket.on(REQUEST_WEB_RTC_CALL, (req) => {
+		socket.broadcast.to(socket.callRoom).emit(NOTIFY_WEB_RTC_CALL, req);
+	});
+
 	socket.on(REQUEST_USABLE_FILE_USER, (req) => {
 		var userNum = req['userNum'];
 		var connection;
@@ -577,9 +586,32 @@ io.on("connection", (socket) => {
 		);
 
 	});
-	socket.on(REQUEST_WEB_RTC_CALL, (req) => {
-		socket.broadcast.to(socket.callRoom).emit(NOTIFY_WEB_RTC_CALL, req);
+	socket.on(REQUEST_FILE_SEND, (req) => {
+		var list = {};
+		for(var key in io.sockets.connected){
+			var cursor = io.sockets.connected[key];
+			list[cursor.myID] = cursor;
+		}
+		var friend = list["user_"+req["toNum"]];
+		if(friend != null && friend.userEnable){
+			var packet = {
+				head : 	PUSH_FILE_SEND,
+				body : 	req
+			};
+			friend.emit(PUSH_FILE_SEND, packet);
+		}else{
+			var data = {
+				isSuccess 	: 	 false,
+				msg 		: 	 "현재 요청하신 사용자분은 이 기능을 사용하실 수 없는 상태에 있습니다. 잠시후 시도해주세요...";
+			}
+			var packet = {
+				head 	: 	RESPONSE_FILE_SEND,
+				body 	: 	data
+			}
+			socket.emit(RESPONSE_FILE_SEND, packet);
+		}
 	});
+	
 	function setRoomName(roomId, roomHash, numList, wSocket, resData){
 		var connection;
 		mysql.createConnection(config).then(

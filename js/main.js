@@ -22,6 +22,8 @@ NEW_ROOM = "new_room";
 APPLY_CALL = "apply_call";
 ANSWER_CALL = "answer_call";
 
+PUSH_FILE_SEND = "push:file_send";
+
 SimplePacket = function(type){
 		this.__constructor(type);
 }
@@ -53,6 +55,11 @@ module.controller('AppController', function($scope, $timeout){
 	// $scope.messageRoom = new Map();
 
 	port.onMessage.addListener(function(data){
+		if(data.head == PUSH_FILE_SEND){
+			var body = data.body;
+			console.log(PUSH_FILE_SEND,body);
+			return ;
+		}
 		if(data.type == CONNECT){
 			console.log("=== connect background ===");
 			port.postMessage({type : REQUEST, category : STATUS});

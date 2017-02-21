@@ -5,6 +5,9 @@ sendFileList.controller("UsableController", ["$scope", function($scope){
 	var user = $scope.$parent.userProfile;
 	var REQUEST_USABLE_FILE_USER = "request:usable_file_user";
 	var RESPONSE_USABLE_FILE_USER = "response:usable_file_user";
+	var REQUEST_FILE_SEND = "request:file_send";
+	var RESPONSE_FILE_SEND = "response:file_send";
+
 	$scope.usableList = [];
 
 	$scope.init = function(){
@@ -20,6 +23,32 @@ sendFileList.controller("UsableController", ["$scope", function($scope){
 	}
 	$scope.test = function(idx){
 		console.log("usableList["+idx+"] : ", $scope.usableList[idx]);
+		var friend = $scope.usableList[idx];
+		var msg = friend['friendName']+"("+friend['friendEmail']+") 님에게 파일전송 신청을 하시겠습니까??";
+		ons.notification.confirm(msg, { 
+			"title" : "파일전송 요청", 
+			"buttonLabels" : ["아니오","예"]
+		}).then(
+			(value) => {
+				if(value){
+					var hsData = {
+						"fromNum"			: 		user['userNum'],
+						"fromEmail"			: 		user['userEmail'],
+						"fromName" 			: 		user['userName'],
+						"toNum"				: 		friend['friendNum'],
+						"toEmail"			: 		friend['friendEmail'],
+						"toName"			: 		friend['friendName']
+					};
+					var packet = new SimplePacket(REQUEST_FILE_SEND);
+					packet.setBody(hsData);
+					port.postMessage(packet);
+				}
+			},
+			(error) => {
+
+			}
+		);
+
 		user['userName'], user['userNum'], user['userEmail'];
 	}
 	$scope.onMessageEvnet = function(data){
@@ -32,6 +61,16 @@ sendFileList.controller("UsableController", ["$scope", function($scope){
 				$scope.$apply();
 			}else{
 				ons.notification.alert("사용자 목록을 불러오는데 실패했습니다.", {title : "ERROR!"});
+			}
+		}else if(head == RESPONSE_FILE_SEND){
+			if(body.isSuccess){
+				if(body.isAccept){
+					
+				}else{
+					ons.notification.alert("사용자 목록을 불러오는데 실패했습니다.", {title : "요청실패!"});	
+				}
+			}else{
+				ons.notification.alert(body.msg, {title : "요청실패!"});	
 			}
 		}
 	}
