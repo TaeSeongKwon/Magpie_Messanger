@@ -69,8 +69,6 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 	}
 	$scope.startCall = function(){
 		navigator.getUserMedia(mediaConfig, addMeVideo, errorUserMedia);
-		if($scope.callData != null)
-			$scope.createOfferSDP();
 	}
 
 	$scope.createOfferSDP = function(){
@@ -81,6 +79,7 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 		$scope.initCommonWebRTC($scope.connection);
 		con = $scope.connection;
 		console.log($scope.connection);
+		console.log("localStream : ", $scope.localStream);
 		$scope.connection.addStream($scope.localStream);
 		$scope.connection.createOffer().then(
 			function (offerSDP){
@@ -203,6 +202,8 @@ p2pCall.controller("CallController", ["$scope", function($scope) {
 		console.log("CREATE LOCAL STREAM");
 		me.srcObject= stream;
 		$scope.localStream = stream;
+		if($scope.callData != null)
+			$scope.createOfferSDP();
 		//$scope.connection.addStream(stream);
 	};
 	function errorUserMedia(error){

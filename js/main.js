@@ -22,7 +22,27 @@ NEW_ROOM = "new_room";
 APPLY_CALL = "apply_call";
 ANSWER_CALL = "answer_call";
 
-var module = angular.module('magpie_front', ['onsen', 'callList', "p2pCall"]);
+SimplePacket = function(type){
+		this.__constructor(type);
+}
+SimplePacket.prototype.head = null;
+SimplePacket.prototype.body;
+
+SimplePacket.prototype.setBody = function(obj){
+	this.body = obj;
+}
+SimplePacket.prototype.getBody = function(){
+	return this.body;
+}
+SimplePacket.prototype.getHead = function(){
+	return this.head;
+}
+SimplePacket.prototype.__constructor = function(type){
+	this.head = type;
+}
+
+
+var module = angular.module('magpie_front', ['onsen', 'callList', "p2pCall", "sendFileList"]);
 module.controller('AppController', function($scope, $timeout){ 
 	var port = chrome.runtime.connect({name : "magpie_app"});
 	$scope.myPort = port;

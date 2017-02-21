@@ -89,6 +89,9 @@
 	REQUEST_WEB_RTC_CALL = "request:web_rtc_call";
 	NOTIFY_WEB_RTC_CALL = "push:web_rtc_call";
 
+	REQUEST_USABLE_FILE_USER = "request:usable_file_user";
+	RESPONSE_USABLE_FILE_USER = "response:usable_file_user";
+
 	DISCONNECT = "disconnect";
 
 
@@ -110,7 +113,7 @@
 	console.log("Start!");
 	// Connect to Server on Websocket
 	var socket = io.connect("http://www.project-knock.tk:9909");
-	// var socket = io.connect("http://localhost:9900");
+	// var socket = io.connect("http://localhost:9909");
 	var user = new User();
 	var myPort;
 	// Connect to popup Page
@@ -326,11 +329,15 @@
 				console.log(NOTIFY_WEB_RTC_CALL);
 				myPort.postMessage(pushData);
 			});
-
+			socket.on(RESPONSE_USABLE_FILE_USER, (res) => {
+				console.log(RESPONSE_USABLE_FILE_USER);
+				myPort.postMessage(res);
+			})
 			socket.on(DISCONNECT, () => {
 				console.log("webSocket disconnect");
 				chrome.runtime.onConnect.removeListener(onConnectEvent);
 			});
+
 			
 
 			// chrome.runtime
@@ -362,6 +369,8 @@
 				client.emit(REQUEST_CREATE_CALL_ROOM, reqData);
 			}else if(data.type ==WEB_RTC_CALL){
 				client.emit(REQUEST_WEB_RTC_CALL, data);
+			}else{
+				client.emit(data.head, data.body);
 			}
 		});
 		myPort.onDisconnect.addListener(() => {
