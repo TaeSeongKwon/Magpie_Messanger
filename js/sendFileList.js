@@ -71,6 +71,7 @@ sendFileList.controller("UsableController", ["$scope", function($scope){
 				if(body.isAccept){
 					$scope.$root.hsData = body['hsData'];
 					$scope.$root.isSender = true;
+					$scope.$root.myPort = port;
 					pageManager.pushPage("fileTransPage.html");
 				}else{
 					var hsData = body['hsData'];

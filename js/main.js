@@ -79,6 +79,7 @@ module.controller('AppController', function($scope, $timeout){
 					
 					// 바로 파일 전송 페이지로 이동한다. 
 					$scope.$root.isSender = false;
+					$scope.$root.myPort = port;
 					pageManager.pushPage("fileTransPage.html");
 				},
 				(error) => {
