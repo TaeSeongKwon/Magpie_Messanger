@@ -1,0 +1,18 @@
+<ons-page ng-controller="TransController" ons-show='initController()' ons-hide="destroyController()">
+	<ons-toolbar>
+		<div class='left'>
+			<ons-back-button></ons-back-button>
+		</div>
+		<div class='center'>
+			파일 전송
+		</div>
+	</ons-toolbar>
+	<div ng-if="isSender == true">
+		<input type='file' id='selectFile' style='display:none;'>
+		<ons-button ng-if="show==false" ng-click="loadFile()">불러오기</ons-button>
+		<ons-button ng-if='show==true' ng-click="sendFile()">보내기</ons-button>
+	</div>
+	<div ng-if="isSender == false">
+
+	</div>
+</ons-page>
