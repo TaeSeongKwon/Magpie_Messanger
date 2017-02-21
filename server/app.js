@@ -8,8 +8,8 @@ var crypto			= require("crypto");
 var config = {
 	host	 		: "localhost",
 	user	 		: "root",
-	password		: "gksksla183",
-	// password		: "root",
+	// password		: "gksksla183",
+	password		: "root",
 	database		: "MAGPIE_DB"
 };
 var port = 9909;
@@ -66,6 +66,9 @@ NOTIFY_CREATE_CALL_ROOM = "push:create_call_room";
 
 REQUEST_WEB_RTC_CALL = "request:web_rtc_call";
 NOTIFY_WEB_RTC_CALL = "push:web_rtc_call";
+
+REQUEST_USABLE_FILE_USER = "request:usable_file_user";
+RESPONSE_USABLE_FILE_USER = "response:usable_file_user";
 //io.use(socketAsPromised());
 io.listen(port);
 
@@ -529,7 +532,51 @@ io.on("connection", (socket) => {
 		console.log("created call room !");
 
 	});
+	socket.on(REQUEST_USABLE_FILE_USER, (req) => {
+		var userNum = req['userNum'];
+		var connection;
+		var packet = {
+			"head" 	: 	RESPONSE_USABLE_FILE_USER,
+			"body" 	: 	null
+		};
+		var body = {
+			isSuccess 	: true
+		};
+		mysql.createConnection(config).then(
+			(conn) => {
+				var selectQuery = "SELECT * FROM friend_list_view WHERE memberNum = ? ";
+				connection = conn;
+				return connection.query(selectQuery, [userNum]);
+			}
+		).then(
+			(result) => {
+				var list = {};
+				var friendList = [];
+				for(var key in io.sockets.connected){
+					var cursor = io.sockets.connected[key];
+					list[cursor.myID] = cursor;
+				}
+				for(var idx in result){
+					var row = result[idx];
+					var friend = list["user_"+row['friendNum']];
+					if(friend != null && friend.userEnable){
+						friendList.push(row);
+					}
+				}
+				body["friendList"] = friendList;
+				packet.body = body;
+				socket.emit(RESPONSE_USABLE_FILE_USER, packet);
+				connection.end();
+			},
+			(error) => {
+				body.isSuccess = false;
+				packet.body = body;
+				socket.emit(RESPONSE_USABLE_FILE_USER, packet);
+				connection.end();
+			}
+		);
 
+	});
 	socket.on(REQUEST_WEB_RTC_CALL, (req) => {
 		socket.broadcast.to(socket.callRoom).emit(NOTIFY_WEB_RTC_CALL, req);
 	});
