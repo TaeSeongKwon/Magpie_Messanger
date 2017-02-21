@@ -95,7 +95,7 @@
 	REQUEST_FILE_SEND = "request:file_send";
 	RESPONSE_FILE_SEND = "response:file_send";
 	PUSH_FILE_SEND = "push:file_send";
-	RETURN_FILE_SEND "return:file_send";
+	RETURN_FILE_SEND = "return:file_send";
 
 	DISCONNECT = "disconnect";
 

@@ -23,7 +23,7 @@ APPLY_CALL = "apply_call";
 ANSWER_CALL = "answer_call";
 
 PUSH_FILE_SEND = "push:file_send";
-RETURN_FILE_SEND "return:file_send";
+RETURN_FILE_SEND = "return:file_send";
 
 SimplePacket = function(type){
 		this.__constructor(type);

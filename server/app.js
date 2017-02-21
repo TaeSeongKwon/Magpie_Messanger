@@ -73,7 +73,7 @@ RESPONSE_USABLE_FILE_USER = "response:usable_file_user";
 REQUEST_FILE_SEND = "request:file_send";
 RESPONSE_FILE_SEND = "response:file_send";
 PUSH_FILE_SEND = "push:file_send";
-RETURN_FILE_SEND "return:file_send";
+RETURN_FILE_SEND = "return:file_send";
 
 //io.use(socketAsPromised());
 io.listen(port);
