@@ -639,13 +639,13 @@ io.on("connection", (socket) => {
 
 	socket.on(REQUEST_WEB_RTC_FILE_ROOM, (req) => {
 		var list = {};
-		var fromNum = req['fromNum'];
+		var toNum = req['toNum'];
 		console.log(req);
 		for(var key in io.sockets.connected){
 			var cursor = io.sockets.connected[key];
 			list[cursor.myID] = cursor;
 		}
-		var friend = list["user_"+fromNum];
+		var friend = list["user_"+toNum];
 		console.log("Friend : ", (friend != null));
 		var roomName = "file_room_" + req["fromEmail"]+"&"+req['toEmail']+"_"+new Date().toString();
 		var encoder = crypto.createHash('sha1');
