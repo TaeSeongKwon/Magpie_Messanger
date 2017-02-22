@@ -245,7 +245,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 						data 			: 		arr
 					}
 				};
-				sender.send(packet);
+				sender.send(JSON.stringify(packet));
  			}
 
 		}
@@ -277,7 +277,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				var packet = {
 					type 		: 		"ack",
 				}
-
+				receiver.send(JSON.stringify(packet));
 			}else if(type == "end"){
 				console.log("END ! : ", $scope.arrayBuffer);
 			}
