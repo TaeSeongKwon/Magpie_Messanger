@@ -186,6 +186,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				body 		: 		{
 					name 		: 			$scope.file.name,
 					size 		: 			$scope.file.size,
+					type 		: 			$scope.file.type,
 					chunk 		: 			1024
 				}
 			};
@@ -288,7 +289,15 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				}
 				receiver.send(JSON.stringify(packet));
 			}else if(type == "end"){
+				var intArray = new Uint8Array($scope.arrayBuffer);
+				var blob = new Blob(intArray, {type : $scope.fileHeader['type'] });
+				var a = document.createElement("a");
+				a.href = URL.createObjectURL(blob);
+				a.download = $scope.fileHeader['name'];
+				document.body.appendChild(a);
+				a.click();
 				console.log("END ! : ", $scope.arrayBuffer);
+				console.log("FILE : ", blob);
 			}
 		}
 	}
