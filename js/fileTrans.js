@@ -277,7 +277,6 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 			if(type == "head"){
 				console.log("========= head ========= ", evt.data);
 				$scope.fileHeader = body;
-				$scope.array = [];
 				var packet = {
 					"type" 		: 		"sign",
 					"body"		: 		"start"
@@ -285,7 +284,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				receiver.send(JSON.stringify(packet));
 			}else if(type == "syn"){
 				console.log("chunk("+body.idx+") : ", body.data);
-				$scope.array = nArray;
+
 				var originArray = new Uint8Array($scope.arrayBuffer);
 				var recvArray = new Uint8Array(body.data);
 				var newArray = new Uint8Array(originArray.byteLength + recvArray.byteLength);
