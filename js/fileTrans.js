@@ -313,7 +313,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				anchor.download =  $scope.fileHeader['name'];
 				document.body.appendChild(a);
 				document.body.appendChild(anchor);
-				a.click();
+				// a.click();
 				anchor.click();
 
 				console.log("END ! : ", $scope.arrayBuffer);
