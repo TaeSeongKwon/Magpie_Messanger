@@ -202,7 +202,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  			if(type == "sign"){
  				if(body == "start"){
  					$scope.fileIdx = 0;
- 					var piece = $scope.file.slice($scope.fileIdx,chunk);
+ 					var piece = $scope.file.slice($scope.fileIdx,chunk-1);
  					var fileReader = new FileReader();
  					fileReader.onloadend = function(){
  						console.log("PIECE : ", piece);
@@ -235,9 +235,9 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  					return ;
  				}
  				if((chunk * $scope.fileIdx) + (chunk-1) > $scope.file.size){
- 					piece = $scope.file.slice((chunk * $scope.fileIdx), $scope.file.size - (chunk * $scope.fileIdx));
+ 					piece = $scope.file.slice((chunk * $scope.fileIdx), $scope.file.size);
  				}else{
- 					piece = $scope.file.slice((chunk * $scope.fileIdx), chunk);
+ 					piece = $scope.file.slice((chunk * $scope.fileIdx), (chunk * $scope.fileIdx)+chunk);
  				}
  				
  				var fileReader = new FileReader();
@@ -289,7 +289,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				var recvArray = new Uint8Array(body.data);
 				var newArray = new Uint8Array(originArray.byteLength + recvArray.byteLength);
 				newArray.set(originArray, 0);
-				newArray.set(recvArray, originArray.byteLength);
+				newArray.set(recvArray. originArray.byteLength);
 				$scope.arrayBuffer = newArray.buffer;
 
 				var packet = {
