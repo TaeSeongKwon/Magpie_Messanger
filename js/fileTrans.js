@@ -186,7 +186,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				body 		: 		{
 					name 		: 			$scope.file.name,
 					size 		: 			$scope.file.size,
-					chunk 		: 			1024*1024
+					chunk 		: 			1024*100
 				}
 			};
 			sender.send(JSON.stringify(packet));
@@ -196,7 +196,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  			var recPacket = JSON.parse(evt.data);
  			var type = recPacket.type;
  			var body = recPacket.body;
- 			var chunk = 1024* 1024;
+ 			var chunk = 1024* 100;
 
  			if(type == "sign"){
  				if(body == "start"){
