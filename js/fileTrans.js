@@ -173,7 +173,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				$scope.setOfferDataChannel($scope.channel, evt.channel);
 				// $scope.setHandleDataChannel($scope.channel);
 			}else{
-				$scope.setAnswerDataChannel($scope.channel, evt.channel);
+				$scope.setAnswerDataChannel(evt.channel,$scope.channel);
 			}
 	      // $scope.setHandleDataChannel(evt.channel);
 	    }
