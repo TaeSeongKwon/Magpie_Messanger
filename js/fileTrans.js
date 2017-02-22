@@ -180,7 +180,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 	}
 	$scope.setOfferDataChannel = function(sender, receiver){
 		receiver.onopen = function(evt) {
-			console.log("File : " : $scope.file);
+			console.log("File : ", $scope.file);
 		}
 		receiver.onmessage = function(evt) {
 			console.log("Offer Channel Data Recevie : ",evt.data);
