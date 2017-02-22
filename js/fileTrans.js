@@ -203,8 +203,9 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  					$scope.fileIdx = 0;
  					var piece = $scope.file.slice($scope.fileIdx,chunk-1);
  					var fileReader = new FileReader();
- 					var arrayBuffer = fileReader.readAsArrayBuffer(piece);
- 					var intArray = new Uint8Array(arrayBuffer.result);
+ 					fileReader.readAsArrayBuffer(piece);
+
+ 					var intArray = new Uint8Array(fileReader.result);
  					var arr = Array.prototype.slice.call(intArray);
 
  					var packet = {
@@ -234,8 +235,8 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  				}
 
  				var fileReader = new FileReader();
- 				var arrayBuffer = fileReader.readAsArrayBuffer(piece);
- 				var intArray = new Uint8Array(arrayBuffer);
+ 				fileReader.readAsArrayBuffer(piece);
+ 				var intArray = new Uint8Array(fileReader.result);
  				var arr = Array.prototype.slice.call(intArray);
 
  				var packet = {
