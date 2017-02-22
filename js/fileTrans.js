@@ -181,9 +181,73 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 	$scope.setOfferDataChannel = function(sender, receiver){
 		receiver.onopen = function(evt) {
 			console.log("File : ", $scope.file);
+			var packet = {
+				type 		: 		"head",
+				body 		: 		{
+					name 		: 			$scope.file.name,
+					size 		: 			$scope.file.size,
+					chunk 		: 			1024*1024
+				}
+			};
+			sender.send(JSON.stringify(packet));
 		}
 		receiver.onmessage = function(evt) {
-			console.log("Offer Channel Data Recevie : ",evt.data);
+ 			console.log("Offer Channel Data Recevie : ",evt.data);
+ 			var recPacket = evt.data;
+ 			var type = recPacket.type;
+ 			var body = recPacket.body;
+ 			var chunk = 1024* 1024;
+
+ 			if(type == "sign"){
+ 				if(body == "start"){
+ 					$scope.fileIdx = 0;
+ 					var piece = $scope.file.slice($scope.fileIdx,chunk-1);
+ 					var fileReader = new FileReader();
+ 					var arrayBuffer = fileReader.readAsArrayBuffer(piece);
+ 					var intArray = new Uint8Array(arrayBuffer);
+ 					var arr = Array.prototype.slice.call(intArray);
+ 					var packet = {
+ 						type 		: 		"syn",
+ 						body 		: 		{
+ 							idx 			: 		$scope.fileIdx,
+ 							offset 			: 		$scope.fileIdx,
+ 							data 			: 		arr
+ 						}
+ 					};
+ 					sender.send(packet);
+ 				}
+ 			}else if(type == "ack"){
+ 				$scope.fileIdx++;
+ 				var piece;
+ 				if(chunk * $scope.fileIdx > $scope.file.size){
+ 					var packet = {
+ 						type 		: 		"end",
+ 					};
+ 					sender.send(packet);
+ 					return ;
+ 				}
+ 				if((chunk * $scope.fileIdx) + (chunk-1) > $scope.file.size){
+ 					piece = $scope.file.slice((chunk * $scope.fileIdx), $scope.file.size - (chunk * $scope.fileIdx));
+ 				}else{
+ 					piece = $scope.file.slice((chunk * $scope.fileIdx), chunk-1);
+ 				}
+
+ 				var fileReader = new FileReader();
+ 				var arrayBuffer = fileReader.readAsArrayBuffer(piece);
+ 				var intArray = new Uint8Array(arrayBuffer);
+ 				var arr = Array.prototype.slice.call(intArray);
+
+ 				var packet = {
+					type 		: 		"syn",
+					body 		: 		{
+						idx 			: 		$scope.fileIdx,
+						offset 			: 		$scope.fileIdx * chunk,
+						data 			: 		arr
+					}
+				};
+				sender.send(packet);
+ 			}
+
 		}
 	}
 	$scope.setAnswerDataChannel = function(sender, receiver){
@@ -191,7 +255,32 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 
 		}
 		sender.onmessage = function(evt) {
+			var recPacket = evt.data;
+			var type = recPacket.type;
+			var body = recPacket.body;
 			console.log("Answer Channel Data Recevie : ",evt.data);
+
+			if(type == "head"){
+				$scope.fileHeader = body;
+				$scope.arrayBuffer = new ArrayBuffer(body.size);
+				var packet = {
+					"type" 		: 		"sign",
+					"body"		: 		"start"
+				};
+				receiver.send(JSON.stringify(packet));
+			}else if(type == "syn"){
+				console.log("chunk("+body.idx+") : ", body.data);
+				var destArray = new Uint8Array($scope.arrayBuffer);
+				destArray.set(body.data, data.offset);
+				$scope.arrayBuffer = destArray.buffer;
+
+				var packet = {
+					type 		: 		"ack",
+				}
+
+			}else if(type == "end"){
+				console.log("END ! : ", $scope.arrayBuffer);
+			}
 		}
 	}
 	$scope.setHandleDataChannel = function (channel){
