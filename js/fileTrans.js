@@ -214,7 +214,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  							data 			: 		arr
  						}
  					};
- 					sender.send(packet);
+ 					sender.send(JSON.stringify(packet));
  				}
  			}else if(type == "ack"){
  				$scope.fileIdx++;
