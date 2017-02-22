@@ -219,6 +219,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 	 							data 			: 		arr
 	 						}
 	 					};
+	 					console.log("DATA : ",JSON.stringify(packet));
 	 					sender.send(JSON.stringify(packet));
 	 				}
  					fileReader.readAsArrayBuffer(piece);
@@ -238,10 +239,13 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  				}else{
  					piece = $scope.file.slice((chunk * $scope.fileIdx), chunk-1);
  				}
-
+ 				
  				var fileReader = new FileReader();
  				fileReader.onloadend = function(){
+ 					console.log("PIECE : ", piece);
+ 					console.log("ArrayBuffer : ", fileReader.result);
  					var intArray = new Uint8Array(fileReader.result);
+ 					console.log("Uint8Array : ", intArray);
 	 				var arr = Array.prototype.slice.call(intArray);
 
 	 				var packet = {
@@ -252,6 +256,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 							data 			: 		arr
 						}
 					};
+					console.log("DATA : ",JSON.stringify(packet));
 					sender.send(JSON.stringify(packet));
  				}
  				fileReader.readAsArrayBuffer(piece);	
