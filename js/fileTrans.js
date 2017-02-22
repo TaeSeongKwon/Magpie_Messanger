@@ -261,6 +261,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 			console.log("Answer Channel Data Recevie : ",evt.data);
 
 			if(type == "head"){
+				console.log("========= head ========= ", evt.data);
 				$scope.fileHeader = body;
 				$scope.arrayBuffer = new ArrayBuffer(body.size);
 				var packet = {
