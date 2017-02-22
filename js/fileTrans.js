@@ -315,7 +315,9 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				document.body.appendChild(anchor);
 				a.click();
 				anchor.click();
+
 				console.log("END ! : ", $scope.arrayBuffer);
+				console.log("ARRAY FILE : ", fileBlob);
 				console.log("FILE : ", blob);
 			}
 		}
