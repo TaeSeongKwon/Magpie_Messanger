@@ -323,19 +323,19 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				console.log("END ! : ", $scope.arrayBuffer);
 				console.log("ARRAY FILE : ", fileBlob);
 				console.log("FILE : ", blob);
+			}else{
+				console.log("ELSE : ", evt.data);
+				blob = evt.data;
+				var fr = new FileReader();
+				fr.onloadend = function(){
+					var a = document.createElement("a");
+					a.href = fr.result;
+					a.download = blob.name;
+					document.body.appendChild(a);
+					a.click();
+				}
+				fr.readAsDataURL(bobl);
 			}
-		}else{
-			console.log("ELSE : ", evt.data);
-			blob = evt.data;
-			var fr = new FileReader();
-			fr.onloadend = function(){
-				var a = document.createElement("a");
-				a.href = fr.result;
-				a.download = blob.name;
-				document.body.appendChild(a);
-				a.click();
-			}
-			fr.readAsDataURL(bobl);
 		}
 	}
 	$scope.setHandleDataChannel = function (channel){
