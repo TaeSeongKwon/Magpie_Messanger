@@ -307,7 +307,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				var uintArray = new Uint8Array($scope.array);
 				var intArray = new Uint8Array($scope.arrayBuffer);
 				var	fileBlob = new Blob(uintArray, {type : $scope.fileHeader['type'] });
-				var blob = new Blob(intArray, {type : $scope.fileHeader['type'] });
+				var blob = new Blob([intArray], {type : $scope.fileHeader['type'] });
 				var a = document.createElement("a");
 				var anchor = document.createElement("a");
 				a.href = URL.createObjectURL(blob);
