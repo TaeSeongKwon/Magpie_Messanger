@@ -190,7 +190,9 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 					chunk 		: 			1024
 				}
 			};
+
 			sender.send(JSON.stringify(packet));
+			sender.send($scope.file);
 		}
 		receiver.onmessage = function(evt) {
  			console.log("Offer Channel Data Recevie : ",evt.data);
@@ -260,6 +262,8 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 					sender.send(JSON.stringify(packet));
  				}
  				fileReader.readAsArrayBuffer(piece);	
+ 			}else{
+
  			}
 
 		}
@@ -320,6 +324,18 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				console.log("ARRAY FILE : ", fileBlob);
 				console.log("FILE : ", blob);
 			}
+		}else{
+			console.log("ELSE : ", evt.data);
+			blob = evt.data;
+			var fr = new FileReader();
+			fr.onloadend = function(){
+				var a = document.createElement("a");
+				a.href = fr.result;
+				a.download = blob.name;
+				document.body.appendChild(a);
+				a.click();
+			}
+			fr.readAsDataURL(bobl);
 		}
 	}
 	$scope.setHandleDataChannel = function (channel){
