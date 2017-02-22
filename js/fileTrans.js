@@ -235,9 +235,9 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  					return ;
  				}
  				if((chunk * $scope.fileIdx) + (chunk-1) > $scope.file.size){
- 					piece = $scope.file.slice((chunk * $scope.fileIdx), $scope.file.size - (chunk * $scope.fileIdx));
+ 					piece = $scope.file.slice((chunk * $scope.fileIdx), (chunk * $scope.fileIdx)+$scope.file.size - (chunk * $scope.fileIdx));
  				}else{
- 					piece = $scope.file.slice((chunk * $scope.fileIdx), chunk-1);
+ 					piece = $scope.file.slice((chunk * $scope.fileIdx), (chunk * $scope.fileIdx)+chunk-1);
  				}
  				
  				var fileReader = new FileReader();
