@@ -193,7 +193,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 		}
 		receiver.onmessage = function(evt) {
  			console.log("Offer Channel Data Recevie : ",evt.data);
- 			var recPacket = evt.data;
+ 			var recPacket = JSON.parse(evt.data);
  			var type = recPacket.type;
  			var body = recPacket.body;
  			var chunk = 1024* 1024;
@@ -255,7 +255,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 
 		}
 		sender.onmessage = function(evt) {
-			var recPacket = evt.data;
+			var recPacket = JSON.parse(evt.data);
 			var type = recPacket.type;
 			var body = recPacket.body;
 			console.log("Answer Channel Data Recevie : ",evt.data);
