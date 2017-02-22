@@ -163,42 +163,44 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 
 		console.log("****** Channel ******", $scope.channel);
 		console.log("****** Connection ******", $scope.connection);
+		$scope.setHandleDataChannel($scope.channel);
 
-		if($scope.isSender){
-			// set Offer DataChannel 
-			$scope.setOfferDataChannel($scope.channel);
-			// $scope.setHandleDataChannel($scope.channel);
-		}else{
-			$scope.setAnswerDataChannel($scope.channel);
-		}
+		
 		connection.ondatachannel = function(evt){
 	      console.log("onDataChannel : ", evt.channel);
-	      $scope.setHandleDataChannel(evt.channel);
+	      	if($scope.isSender){
+				// set Offer DataChannel 
+				$scope.setOfferDataChannel($scope.channel, evt.channel);
+				// $scope.setHandleDataChannel($scope.channel);
+			}else{
+				$scope.setAnswerDataChannel($scope.channel, evt.channel);
+			}
+	      // $scope.setHandleDataChannel(evt.channel);
 	    }
 	}
-	$scope.setOfferDataChannel = function(channel){
-		channel.onopen = function(evt) {
-
+	$scope.setOfferDataChannel = function(sender, receiver){
+		receiver.onopen = function(evt) {
+			console.log("File : " : $scope.file);
 		}
-		channel.onmessage = function(evt) {
+		receiver.onmessage = function(evt) {
 			console.log("Offer Channel Data Recevie : ",evt.data);
 		}
 	}
-	$scope.setAnswerDataChannel = function(channel){
-		channel.onopen = function(evt) {
+	$scope.setAnswerDataChannel = function(sender, receiver){
+		sender.onopen = function(evt) {
 
 		}
-		channel.onmessage = function(evt) {
+		sender.onmessage = function(evt) {
 			console.log("Answer Channel Data Recevie : ",evt.data);
 		}
 	}
 	$scope.setHandleDataChannel = function (channel){
 		console.log("set setHandleDataChannel : ", channel);
 		channel.onopen = function(evt){
-			console.log("Remote channel Open!");
+			console.log("local channel Open!");
 		}
 		channel.onmessage = function(evt){
-			console.log("Remote Channel Data Recevie : ",evt.data);
+			console.log("local Channel Data Recevie : ",evt.data);
 			// alert("Received Message : "+evt.data);
 		}
 	};
