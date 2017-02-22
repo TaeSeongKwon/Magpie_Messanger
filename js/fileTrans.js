@@ -205,7 +205,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  					var fileReader = new FileReader();
  					fileReader.readAsArrayBuffer(piece);
  					console.log("PIECE : ", piece);
- 					console.log("ArrayBuffer : ", filerReader.result);
+ 					console.log("ArrayBuffer : ", fileReader.result);
  					var intArray = new Uint8Array(fileReader.result);
  					console.log("Uint8Array : ", intArray);
  					var arr = Array.prototype.slice.call(intArray);
