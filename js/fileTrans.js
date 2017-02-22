@@ -274,7 +274,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 			}else if(type == "syn"){
 				console.log("chunk("+body.idx+") : ", body.data);
 				var destArray = new Uint8Array($scope.arrayBuffer);
-				destArray.set(body.data, data.offset);
+				destArray.set(body.data, body.offset);
 				$scope.arrayBuffer = destArray.buffer;
 
 				var packet = {
