@@ -203,22 +203,24 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  					$scope.fileIdx = 0;
  					var piece = $scope.file.slice($scope.fileIdx,chunk-1);
  					var fileReader = new FileReader();
- 					fileReader.readAsArrayBuffer(piece);
- 					console.log("PIECE : ", piece);
- 					console.log("ArrayBuffer : ", fileReader.result);
- 					var intArray = new Uint8Array(fileReader.result);
- 					console.log("Uint8Array : ", intArray);
- 					var arr = Array.prototype.slice.call(intArray);
+ 					fileReader.onloadend = function(){
+ 						console.log("PIECE : ", piece);
+	 					console.log("ArrayBuffer : ", fileReader.result);
+	 					var intArray = new Uint8Array(fileReader.result);
+	 					console.log("Uint8Array : ", intArray);
+	 					var arr = Array.prototype.slice.call(intArray);
 
- 					var packet = {
- 						type 		: 		"syn",
- 						body 		: 		{
- 							idx 			: 		$scope.fileIdx,
- 							offset 			: 		$scope.fileIdx,
- 							data 			: 		arr
- 						}
- 					};
- 					sender.send(JSON.stringify(packet));
+	 					var packet = {
+	 						type 		: 		"syn",
+	 						body 		: 		{
+	 							idx 			: 		$scope.fileIdx,
+	 							offset 			: 		$scope.fileIdx,
+	 							data 			: 		arr
+	 						}
+	 					};
+	 					sender.send(JSON.stringify(packet));
+	 				}
+ 					fileReader.readAsArrayBuffer(piece);
  				}
  			}else if(type == "ack"){
  				$scope.fileIdx++;
@@ -237,19 +239,21 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  				}
 
  				var fileReader = new FileReader();
- 				fileReader.readAsArrayBuffer(piece);
- 				var intArray = new Uint8Array(fileReader.result);
- 				var arr = Array.prototype.slice.call(intArray);
+ 				fileReader.onloadend = function(){
+ 					var intArray = new Uint8Array(fileReader.result);
+	 				var arr = Array.prototype.slice.call(intArray);
 
- 				var packet = {
-					type 		: 		"syn",
-					body 		: 		{
-						idx 			: 		$scope.fileIdx,
-						offset 			: 		$scope.fileIdx * chunk,
-						data 			: 		arr
-					}
-				};
-				sender.send(JSON.stringify(packet));
+	 				var packet = {
+						type 		: 		"syn",
+						body 		: 		{
+							idx 			: 		$scope.fileIdx,
+							offset 			: 		$scope.fileIdx * chunk,
+							data 			: 		arr
+						}
+					};
+					sender.send(JSON.stringify(packet));
+ 				}
+ 				fileReader.readAsArrayBuffer(piece);	
  			}
 
 		}
