@@ -164,19 +164,41 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 		console.log("****** Channel ******", $scope.channel);
 		console.log("****** Connection ******", $scope.connection);
 
-		$scope.setHandleDataChannel($scope.channel);
+		if($scope.isSender){
+			// set Offer DataChannel 
+			$scope.setOfferDataChannel($scope.channel);
+			// $scope.setHandleDataChannel($scope.channel);
+		}else{
+			$scope.setAnswerDataChannel($scope.channel);
+		}
 		connection.ondatachannel = function(evt){
 	      console.log("onDataChannel : ", evt.channel);
 	      $scope.setHandleDataChannel(evt.channel);
 	    }
 	}
+	$scope.setOfferDataChannel = function(channel){
+		channel.onopen = function(evt) {
+
+		}
+		channel.onmessage = function(evt) {
+			console.log("Offer Channel Data Recevie : ",evt.data);
+		}
+	}
+	$scope.setAnswerDataChannel = function(channel){
+		channel.onopen = function(evt) {
+
+		}
+		channel.onmessage = function(evt) {
+			console.log("Answer Channel Data Recevie : ",evt.data);
+		}
+	}
 	$scope.setHandleDataChannel = function (channel){
 		console.log("set setHandleDataChannel : ", channel);
 		channel.onopen = function(evt){
-			console.log("channel Open!");
+			console.log("Remote channel Open!");
 		}
 		channel.onmessage = function(evt){
-			console.log("Channel Data Recevie : ",evt.data);
+			console.log("Remote Channel Data Recevie : ",evt.data);
 			// alert("Received Message : "+evt.data);
 		}
 	};
