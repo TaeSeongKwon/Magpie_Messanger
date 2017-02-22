@@ -192,7 +192,6 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 			};
 
 			sender.send(JSON.stringify(packet));
-			sender.send($scope.file);
 		}
 		receiver.onmessage = function(evt) {
  			console.log("Offer Channel Data Recevie : ",evt.data);
@@ -262,10 +261,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 					sender.send(JSON.stringify(packet));
  				}
  				fileReader.readAsArrayBuffer(piece);	
- 			}else{
-
  			}
-
 		}
 	}
 	$scope.setAnswerDataChannel = function(sender, receiver){
@@ -281,7 +277,6 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 			if(type == "head"){
 				console.log("========= head ========= ", evt.data);
 				$scope.fileHeader = body;
-				$scope.arrayBuffer = new ArrayBuffer(0);
 				$scope.array = [];
 				var packet = {
 					"type" 		: 		"sign",
@@ -290,7 +285,6 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				receiver.send(JSON.stringify(packet));
 			}else if(type == "syn"){
 				console.log("chunk("+body.idx+") : ", body.data);
-				var nArray = $scope.array.concat(body.data);
 				$scope.array = nArray;
 				var originArray = new Uint8Array($scope.arrayBuffer);
 				var recvArray = new Uint8Array(body.data);
@@ -298,43 +292,21 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				newArray.set(originArray, 0);
 				newArray.set(recvArray, originArray.byteLength);
 				$scope.arrayBuffer = newArray.buffer;
-
 				var packet = {
 					type 		: 		"ack",
 				}
 				receiver.send(JSON.stringify(packet));
 			}else if(type == "end"){
-				var uintArray = new Uint8Array($scope.array);
 				var intArray = new Uint8Array($scope.arrayBuffer);
-				var	fileBlob = new Blob(uintArray, {type : $scope.fileHeader['type'] });
 				var blob = new Blob([intArray], {type : $scope.fileHeader['type'] });
 				var a = document.createElement("a");
-				var anchor = document.createElement("a");
 				a.href = URL.createObjectURL(blob);
-				anchor.href = URL.createObjectURL(fileBlob);
-
 				a.download = $scope.fileHeader['name'];
-				anchor.download =  $scope.fileHeader['name'];
 				document.body.appendChild(a);
-				document.body.appendChild(anchor);
 				a.click();
 				// anchor.click();
-
 				console.log("END ! : ", $scope.arrayBuffer);
-				console.log("ARRAY FILE : ", fileBlob);
 				console.log("FILE : ", blob);
-			}else{
-				console.log("ELSE : ", evt.data);
-				blob = evt.data;
-				var fr = new FileReader();
-				fr.onloadend = function(){
-					var a = document.createElement("a");
-					a.href = fr.result;
-					a.download = blob.name;
-					document.body.appendChild(a);
-					a.click();
-				}
-				fr.readAsDataURL(bobl);
 			}
 		}
 	}
