@@ -289,7 +289,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				var recvArray = new Uint8Array(body.data);
 				var newArray = new Uint8Array(originArray.byteLength + recvArray.byteLength);
 				newArray.set(originArray, 0);
-				newArray.set(recvArray. originArray.byteLength);
+				newArray.set(recvArray, originArray.byteLength);
 				$scope.arrayBuffer = newArray.buffer;
 
 				var packet = {
