@@ -286,6 +286,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 					"body"		: 		"start"
 				};
 				$scope.crrSize = 0;
+				$scope.arrayBuffer = new Uint8Array();
 				$scope.$apply();
 				receiver.send(JSON.stringify(packet));
 			}else if(type == "syn"){
