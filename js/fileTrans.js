@@ -22,6 +22,8 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 
 	$scope.initController = function(){
 		console.log("Initialize TransController!");
+		$scope.fileHeader = null;
+		$scope.crrSize = 0;
 		$scope.port = $scope.$root.myPort;
 		$scope.port.onMessage.addListener($scope.onMessageEvent);
 		$scope.connection = null;
@@ -179,6 +181,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 	    }
 	}
 	$scope.setOfferDataChannel = function(sender, receiver){
+		var chunk = 1024 * 14;
 		receiver.onopen = function(evt) {
 			console.log("File : ", $scope.file);
 			var packet = {
@@ -187,7 +190,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 					name 		: 			$scope.file.name,
 					size 		: 			$scope.file.size,
 					type 		: 			$scope.file.type,
-					chunk 		: 			1024
+					chunk 		: 			chunk
 				}
 			};
 
@@ -198,7 +201,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  			var recPacket = JSON.parse(evt.data);
  			var type = recPacket.type;
  			var body = recPacket.body;
- 			var chunk = 1024;
+ 			
 
  			if(type == "sign"){
  				if(body == "start"){
@@ -233,6 +236,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  						type 		: 		"end",
  					};
  					sender.send(JSON.stringify(packet));
+ 					$scope.show = false;
  					return ;
  				}
  				if((chunk * $scope.fileIdx) + (chunk-1) > $scope.file.size){
@@ -281,6 +285,8 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 					"type" 		: 		"sign",
 					"body"		: 		"start"
 				};
+				$scope.crrSize = 0;
+				$scope.$apply();
 				receiver.send(JSON.stringify(packet));
 			}else if(type == "syn"){
 				console.log("chunk("+body.idx+") : ", body.data);
@@ -294,6 +300,8 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				var packet = {
 					type 		: 		"ack",
 				}
+				$scope.crrSize = $scope.crrSize + recvArray.byteLength;
+				$scope.$apply();
 				receiver.send(JSON.stringify(packet));
 			}else if(type == "end"){
 				var intArray = new Uint8Array($scope.arrayBuffer);

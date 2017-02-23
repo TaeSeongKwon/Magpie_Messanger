@@ -13,6 +13,24 @@
 		<ons-button ng-if='show==true' ng-click="sendFile()">보내기</ons-button>
 	</div>
 	<div ng-if="isSender == false">
-
+		<ons-list>
+			<ons-list-item>
+				<div class='left'>
+					<span class='list__item__subtitle'>파일명</span>
+				</div>
+				<div class='center'>
+					<span class='list__item__title'>{{fileHeader.name}}</span>
+				</div>
+			</ons-list-item>
+			<ons-list-item>
+				<div class='left'>
+					<span class='list__item__subtitle'>파일 크기</span>
+				</div>
+				<div class='center'>
+					<span class='list__item__title'>{{fileHeader.size}}</span>
+				</div>
+			</ons-list-item>
+			<ons-progress-bar value="{{(crrSize/fileHeader.size)*100}}"></ons-progress-bar>
+		</ons-list>
 	</div>
 </ons-page>
