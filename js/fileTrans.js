@@ -34,7 +34,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 		$scope.isSender = $scope.$root.isSender;
 		$scope.fileSend = false;
 		$scope.show = false;
-		
+
 		if($scope.isSender){
 			$scope.hsData = $scope.$root.hsData;
 			$scope.select = document.getElementById("selectFile");	
@@ -330,7 +330,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				document.body.appendChild(a);
 				a.click();
 				URL.revokeObjectURL(url);
-				document.body.removeChilde(a);
+				document.body.removeChild(a);
 				// anchor.click();
 				console.log("END ! : ", $scope.arrayBuffer);
 				console.log("FILE : ", blob);
