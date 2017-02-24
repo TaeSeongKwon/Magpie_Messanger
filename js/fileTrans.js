@@ -49,6 +49,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 					size 		: 		$scope.file.size
 				};
 				$scope.crrSize = 0;
+				$scope.crrPercent = 0;
 				$scope.$apply();
 			});
 		}
@@ -236,7 +237,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 	 					};
 	 					console.log("DATA : ",JSON.stringify(packet));
 	 					$scope.crrSize = $scope.crrSize + intArray.byteLength;
-	 					$scope.crrPercent = ((crrSize/fileHeader.size)*100).toFixed(2);
+	 					$scope.crrPercent = (($scope.crrSize/$scope.fileHeader.size)*100).toFixed(2);
 	 					$scope.fileSend = true;
 	 					$scope.$apply();
 	 					sender.send(JSON.stringify(packet));
@@ -251,7 +252,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  						type 		: 		"end",
  					};
  					sender.send(JSON.stringify(packet));
- 					$scope.fileSend = true;
+ 					$scope.fileSend = false;
  					$scope.show = false;
  					$scope.$apply();
  					return ;
@@ -270,7 +271,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  					console.log("Uint8Array : ", intArray);
 	 				var arr = Array.prototype.slice.call(intArray);
 	 				$scope.crrSize = $scope.crrSize + intArray.byteLength;
-	 				$scope.crrPercent = ((crrSize/fileHeader.size)*100).toFixed(2);
+	 				$scope.crrPercent = (($scope.crrSize/$scope.fileHeader.size)*100).toFixed(2);
 	 				$scope.$apply();
 	 				var packet = {
 						type 		: 		"syn",
@@ -322,7 +323,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 					type 		: 		"ack",
 				}
 				$scope.crrSize = $scope.crrSize + recvArray.byteLength;
-				$scope.crrPercent = ((crrSize/fileHeader.size)*100).toFixed(2);
+				$scope.crrPercent = (($scope.crrSize/$scope.fileHeader.size)*100).toFixed(2);
 				$scope.$apply();
 				receiver.send(JSON.stringify(packet));
 			}else if(type == "end"){
