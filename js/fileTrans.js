@@ -37,6 +37,11 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				if(e.target.files.length > 0)
 					$scope.file = e.target.files[0];
 				$scope.show = true;
+				$scope.fileHeader = {
+					name 		: 		$scope.file.name,
+					size 		: 		$scope.file.size
+				};
+				$scope.crrSize = 0;
 				$scope.$apply();
 			});
 		}
@@ -193,7 +198,6 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 					chunk 		: 			chunk
 				}
 			};
-
 			sender.send(JSON.stringify(packet));
 		}
 		receiver.onmessage = function(evt) {
@@ -224,6 +228,8 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 	 						}
 	 					};
 	 					console.log("DATA : ",JSON.stringify(packet));
+	 					$scope.crrSize = $scope.crrSize + intArray.byteLength;
+	 					$scope.$apply();
 	 					sender.send(JSON.stringify(packet));
 	 				}
  					fileReader.readAsArrayBuffer(piece);
@@ -252,7 +258,8 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  					var intArray = new Uint8Array(fileReader.result);
  					console.log("Uint8Array : ", intArray);
 	 				var arr = Array.prototype.slice.call(intArray);
-
+	 				$scope.crrSize = $scope.crrSize + intArray.byteLength;
+	 				$scope.$apply();
 	 				var packet = {
 						type 		: 		"syn",
 						body 		: 		{
@@ -308,10 +315,13 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 				var intArray = new Uint8Array($scope.arrayBuffer);
 				var blob = new Blob([intArray], {type : $scope.fileHeader['type'] });
 				var a = document.createElement("a");
-				a.href = URL.createObjectURL(blob);
+				var url = URL.createObjectURL(blob);
+				a.href = url;
 				a.download = $scope.fileHeader['name'];
 				document.body.appendChild(a);
 				a.click();
+				URL.revokeObjectURL(url);
+				document.body.removeChilde(a);
 				// anchor.click();
 				console.log("END ! : ", $scope.arrayBuffer);
 				console.log("FILE : ", blob);
