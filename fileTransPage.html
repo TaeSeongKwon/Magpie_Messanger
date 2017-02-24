@@ -10,7 +10,7 @@
 	<div ng-if="isSender == true">
 		<input type='file' id='selectFile' style='display:none;'>
 		<ons-button ng-if="show==false" modifier='large' ng-click="loadFile()">불러오기</ons-button>
-		<ons-button ng-if='show==true' modifier='large' disabled="{{fileSend}}" ng-click="sendFile()">보내기</ons-button>
+		<ons-button ng-if='show && !fileSend' modifier='large' ng-click="sendFile()">보내기</ons-button>
 		<ons-list>
 			<ons-list-item>
 				<div class='left'>
@@ -25,7 +25,7 @@
 					<span class='list__item__subtitle'>파일 크기</span>
 				</div>
 				<div class='center'>
-					<span class='list__item__title'>{{crrSize}} / {{fileHeader.size}} ({{(crrSize/fileHeader.size)*100}} %)</span>
+					<span class='list__item__title'>{{crrSize}} / {{fileHeader.size}} ({{}} %)</span>
 				</div>
 			</ons-list-item>
 			<ons-progress-bar value="{{(crrSize/fileHeader.size)*100}}"></ons-progress-bar>
