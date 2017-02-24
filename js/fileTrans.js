@@ -229,6 +229,7 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 	 					};
 	 					console.log("DATA : ",JSON.stringify(packet));
 	 					$scope.crrSize = $scope.crrSize + intArray.byteLength;
+	 					$scope.fileSend = true;
 	 					$scope.$apply();
 	 					sender.send(JSON.stringify(packet));
 	 				}
@@ -242,7 +243,9 @@ fileTrans.controller("TransController", ["$scope", function($scope){
  						type 		: 		"end",
  					};
  					sender.send(JSON.stringify(packet));
+ 					$scope.fileSend = true;
  					$scope.show = false;
+ 					$scope.$apply();
  					return ;
  				}
  				if((chunk * $scope.fileIdx) + (chunk-1) > $scope.file.size){
