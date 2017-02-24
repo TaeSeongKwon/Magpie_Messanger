@@ -22,13 +22,19 @@ fileTrans.controller("TransController", ["$scope", function($scope){
 
 	$scope.initController = function(){
 		console.log("Initialize TransController!");
-		$scope.fileHeader = null;
+		$scope.fileHeader = {
+			name  :  "",
+			size : 0
+		};
 		$scope.crrSize = 0;
 		$scope.port = $scope.$root.myPort;
 		$scope.port.onMessage.addListener($scope.onMessageEvent);
+
 		$scope.connection = null;
 		$scope.isSender = $scope.$root.isSender;
+		$scope.fileSend = false;
 		$scope.show = false;
+		
 		if($scope.isSender){
 			$scope.hsData = $scope.$root.hsData;
 			$scope.select = document.getElementById("selectFile");	

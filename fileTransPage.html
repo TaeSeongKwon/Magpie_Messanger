@@ -10,7 +10,7 @@
 	<div ng-if="isSender == true">
 		<input type='file' id='selectFile' style='display:none;'>
 		<ons-button ng-if="show==false" modifier='large' ng-click="loadFile()">불러오기</ons-button>
-		<ons-button ng-if='show==true' modifier='large' ng-click="sendFile()">보내기</ons-button>
+		<ons-button ng-if='show==true' modifier='large' disabled="{{fileSend}}" ng-click="sendFile()">보내기</ons-button>
 		<ons-list>
 			<ons-list-item>
 				<div class='left'>
