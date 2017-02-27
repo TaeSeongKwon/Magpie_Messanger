@@ -4,11 +4,11 @@
 			대화목록
 		</div>
 	</ons-toolbar>
-	<div class="navigation-bar">
+	<!-- <div class="navigation-bar">
       <div class="navigation-bar__center">
         <ons-input ng-model='idSearchField' type="search" class="search-input custom" style="width: 96%; margin: 6px auto 6px auto;" placeholder="Search"></ons-input>
       </div>
-    </div>
+    </div> -->
 	<ons-list>
 		<ons-list-item ng-repeat="(idx, room) in chRoomList"modifier="longdivider" tappable ng-click="goChattingRoom(room.room_num, idx)">
 			<div class="left">
