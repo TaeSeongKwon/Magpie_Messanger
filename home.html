@@ -9,11 +9,11 @@
 			</ons-button>
 		</div>
 	</ons-toolbar>
-	<!-- <div class="navigation-bar">
+	<div class="navigation-bar">
       <div class="navigation-bar__center">
         <ons-input ng-model='idSearchField' type="search" class="search-input custom" style="width: 96%; margin: 6px auto 6px auto;" placeholder="Search"></ons-input>
       </div>
-    </div> -->
+    </div>
 	<ons-list>
 		<ons-list-item ng-repeat="(idx, value) in friendList" modifier="longdivider" tappable >
 			<div class="left">
@@ -31,6 +31,9 @@
 		</ons-fab>
 		<ons-speed-dial-item ng-click="searchUserView()">
 			<ons-icon icon="fa-search-plus"></ons-icon>
+		</ons-speed-dial-item>
+		<ons-speed-dial-item ng-click="viewRequestFriend()">
+			<ons-icon icon="fa-user-plus"></ons-icon>
 		</ons-speed-dial-item>
 	</ons-speed-dial>
 </ons-page>
