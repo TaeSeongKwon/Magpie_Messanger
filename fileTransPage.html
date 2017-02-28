@@ -25,10 +25,10 @@
 					<span class='list__item__subtitle'>파일 크기</span>
 				</div>
 				<div class='center'>
-					<span class='list__item__title'>{{crrSize}} / {{fileHeader.size}} ({{crrPercent}} %)</span>
+					<span class='list__item__title'>{{crrSize}} / {{fileHeader.size}} ({{}} %)</span>
 				</div>
 			</ons-list-item>
-			<ons-progress-bar value="{{crrPercent}}"></ons-progress-bar>
+			<ons-progress-bar value="{{(crrSize/fileHeader.size)*100}}"></ons-progress-bar>
 		</ons-list>
 	</div>
 	<div ng-if="isSender == false">
@@ -46,10 +46,10 @@
 					<span class='list__item__subtitle'>파일 크기</span>
 				</div>
 				<div class='center'>
-					<span class='list__item__title'>{{crrSize}} / {{fileHeader.size}} ({{crrPercent}}%)</span>
+					<span class='list__item__title'>{{crrSize}} / {{fileHeader.size}} ({{(crrSize/fileHeader.size)*100}} %)</span>
 				</div>
 			</ons-list-item>
-			<ons-progress-bar value="{{crrPercent}}"></ons-progress-bar>
+			<ons-progress-bar value="{{(crrSize/fileHeader.size)*100}}"></ons-progress-bar>
 		</ons-list>
 	</div>
 </ons-page>
